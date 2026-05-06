@@ -7,14 +7,30 @@ import { prisma }       from '@/lib/prisma'
 import { getAuthUser }  from '@/lib/auth'
 import { PLANS }        from '@/lib/constants'
 
-const razorpay = new Razorpay({
-  key_id:     process.env.RAZORPAY_KEY_ID     ?? '',
-  key_secret: process.env.RAZORPAY_KEY_SECRET ?? '',
-})
+export const dynamic = 'force-dynamic'
+
+function getRazorpayClient() {
+  const keyId = process.env.RAZORPAY_KEY_ID
+  const keySecret = process.env.RAZORPAY_KEY_SECRET
+
+  if (!keyId || !keySecret) {
+    return null
+  }
+
+  return new Razorpay({
+    key_id: keyId,
+    key_secret: keySecret,
+  })
+}
 
 // POST /api/payment/razorpay — create order
 export async function POST(req: Request) {
   try {
+    const razorpay = getRazorpayClient()
+    if (!razorpay) {
+      return NextResponse.json({ error: 'Razorpay is not configured yet' }, { status: 503 })
+    }
+
     const user = await getAuthUser(req)
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -41,6 +57,10 @@ export async function POST(req: Request) {
 // PUT /api/payment/razorpay — verify payment
 export async function PUT(req: Request) {
   try {
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json({ error: 'Razorpay is not configured yet' }, { status: 503 })
+    }
+
     const user = await getAuthUser(req)
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
