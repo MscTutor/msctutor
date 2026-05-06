@@ -1,0 +1,571 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── USERS ────────────────────────────────────────────
+model User {
+  id          Int      @id @default(autoincrement())
+  firebaseUid String   @unique
+  name        String
+  email       String?  @unique
+  phone       String?
+  photoUrl    String?
+  role        String   @default("student") // student|teacher|school_admin|content_admin|super_admin
+  plan        String   @default("free")
+  credits     Int      @default(5)
+  creditsResetAt DateTime?
+  language    String   @default("en")
+  schoolId    Int?
+  school      School?  @relation(fields: [schoolId], references: [id])
+  fcmToken    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([firebaseUid])
+  @@index([role])
+}
+
+// ─── CONTENT ──────────────────────────────────────────
+model Subject {
+  id          Int       @id @default(autoincrement())
+  name        String
+  nameHindi   String?
+  slug        String    @unique
+  icon        String?
+  color       String?
+  description String?   @db.Text
+  branch      String    @default("general") // math|science|commerce|humanities|tech|language
+  isActive    Boolean   @default(true)
+  order       Int       @default(0)
+  chapters    Chapter[]
+  questions   Question[]
+  formulas    Formula[]
+  examPapers  ExamPaper[]
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+}
+
+model Chapter {
+  id            Int        @id @default(autoincrement())
+  title         String
+  titleHindi    String?
+  slug          String     @unique
+  description   String?    @db.Text
+  subjectId     Int
+  subject       Subject    @relation(fields: [subjectId], references: [id])
+  classLevel    String?
+  board         String?
+  order         Int        @default(0)
+  concepts      String?    @db.LongText  // JSON
+  conceptItems  Concept[]
+  formulas      Formula[]
+  questions     Question[]
+  diagrams      Diagram[]
+  experiments   Experiment[]
+  keyPoints     String?    @db.Text      // JSON array
+  videoType     String?    // youtube|ai-animation
+  videoId       String?    // YouTube video ID
+  videoAnimation String?   @db.LongText  // AI-generated HTML animation
+  videoDuration Int?
+  videoTitle    String?
+  metaTitle     String?    @db.Text
+  metaDesc      String?    @db.Text
+  metaKeywords  String?    @db.Text
+  isPublic      Boolean    @default(true)
+  isApproved    Boolean    @default(true)
+  addedBy       String?
+  addedByRole   String?
+  schoolId      Int?
+  storageBytes  Int        @default(0)
+  views         Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([subjectId, classLevel])
+}
+
+model Question {
+  id            Int       @id @default(autoincrement())
+  slug          String    @unique
+  title         String    @db.Text
+  titleHindi    String?   @db.Text
+  solution      String    @db.LongText
+  steps         String?   @db.LongText   // JSON
+  formula       String?   @db.Text
+  formulaLatex  String?   @db.Text
+  ncertRef      String?   @db.Text
+  imageUrl      String?
+  diagramUrl    String?
+  difficulty    String    @default("medium")
+  subjectId     Int?
+  subject       Subject?  @relation(fields: [subjectId], references: [id])
+  chapterId     Int?
+  chapter       Chapter?  @relation(fields: [chapterId], references: [id])
+  classLevel    String?
+  board         String?
+  language      String    @default("en")
+  tags          String?   @db.Text
+  views         Int       @default(0)
+  helpful       Int       @default(0)
+  rating        Float     @default(0)
+  ratingCount   Int       @default(0)
+  source        String    @default("ai")  // ai|user|admin|teacher|pdf-extract
+  userId        String?
+  addedBy       String?
+  addedByRole   String?
+  isPublic      Boolean   @default(true)
+  isApproved    Boolean   @default(false)
+  metaTitle     String?   @db.Text
+  metaDesc      String?   @db.Text
+  metaKeywords  String?   @db.Text
+  schemaJson    String?   @db.LongText
+  relatedSlugs  String?   @db.Text       // JSON array
+  comments      Comment[]
+  examQuestions ExamQuestion[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([subjectId, classLevel])
+  @@index([isPublic, isApproved])
+}
+
+model Formula {
+  id          Int      @id @default(autoincrement())
+  title       String
+  latex       String   @db.Text
+  description String?  @db.Text
+  subjectId   Int
+  subject     Subject  @relation(fields: [subjectId], references: [id])
+  chapterId   Int?
+  chapter     Chapter? @relation(fields: [chapterId], references: [id])
+  classLevel  String?
+  isActive    Boolean  @default(true)
+}
+
+model Diagram {
+  id          Int     @id @default(autoincrement())
+  title       String
+  imageUrl    String
+  thumbUrl    String?
+  source      String  // wikimedia|nasa|ai-generated|upload
+  license     String  @default("CC-BY-SA")
+  attribution String?
+  altText     String?
+  chapterId   Int
+  chapter     Chapter @relation(fields: [chapterId], references: [id])
+}
+
+model Experiment {
+  id          Int     @id @default(autoincrement())
+  title       String
+  objective   String  @db.Text
+  materials   String  @db.Text
+  procedure   String  @db.LongText
+  result      String  @db.Text
+  imageUrl    String?
+  chapterId   Int
+  chapter     Chapter @relation(fields: [chapterId], references: [id])
+}
+
+// ─── UPLOADED CONTENT ─────────────────────────────────
+model UploadedPDF {
+  id               Int      @id @default(autoincrement())
+  fileName         String
+  fileUrl          String
+  fileSizeBytes    Int      @default(0)
+  subject          String?
+  classLevel       String?
+  board            String?
+  uploadedBy       String
+  uploadedByRole   String
+  schoolId         Int?
+  pagesExtracted   Int      @default(0)
+  pagesCreated     Int      @default(0)
+  processingStatus String   @default("pending")
+  errorMessage     String?  @db.Text
+  createdAt        DateTime @default(now())
+}
+
+model StorageUsage {
+  id         Int      @id @default(autoincrement())
+  schoolId   Int?
+  teacherUid String?
+  fileType   String   // pdf|image|video
+  fileName   String
+  fileUrl    String
+  sizeBytes  Int
+  isDeleted  Boolean  @default(false)
+  deletedAt  DateTime?
+  createdAt  DateTime @default(now())
+
+  @@index([schoolId])
+}
+
+// ─── COMMENTS ─────────────────────────────────────────
+model Comment {
+  id           Int      @id @default(autoincrement())
+  content      String   @db.Text
+  userId       String?  // Firebase UID (null = anonymous)
+  userName     String
+  userAvatar   String?
+  branch       String   // science|math|commerce|general|physics|chemistry|biology
+  rating       Int?     // 1-5
+  subjectId    Int?
+  subject      Subject? @relation(fields: [subjectId], references: [id])
+  questionId   Int?
+  question     Question? @relation(fields: [questionId], references: [id])
+  pageUrl      String?
+  isRegistered Boolean  @default(false)
+  isApproved   Boolean  @default(true)
+  likes        Int      @default(0)
+  replies      Reply[]
+  createdAt    DateTime @default(now())
+
+  @@index([branch])
+  @@index([subjectId])
+  @@index([questionId])
+}
+
+model Reply {
+  id           Int      @id @default(autoincrement())
+  content      String   @db.Text
+  userId       String   // Firebase UID — ONLY registered users
+  userName     String
+  userAvatar   String?
+  isRegistered Boolean  @default(true)
+  commentId    Int
+  comment      Comment  @relation(fields: [commentId], references: [id])
+  likes        Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([commentId])
+}
+
+// ─── EXAM SYSTEM ──────────────────────────────────────
+model ExamPaper {
+  id            Int            @id @default(autoincrement())
+  title         String
+  subjectId     Int?
+  subject       Subject?       @relation(fields: [subjectId], references: [id])
+  classLevel    String?
+  board         String?
+  state         String?
+  medium        String         @default("English")
+  difficulty    String         @default("mixed")
+  totalMarks    Int            @default(40)
+  duration      Int            @default(40)
+  totalQ        Int            @default(20)
+  shareCode     String?        @unique
+  isPublic      Boolean        @default(false)
+  isAIGenerated Boolean        @default(true)
+  createdBy     String
+  schoolId      Int?
+  school        School?        @relation(fields: [schoolId], references: [id])
+  questions     ExamQuestion[]
+  attempts      ExamAttempt[]
+  createdAt     DateTime       @default(now())
+
+  @@index([shareCode])
+  @@index([board, classLevel])
+}
+
+model ExamQuestion {
+  id            Int       @id @default(autoincrement())
+  examId        Int
+  exam          ExamPaper @relation(fields: [examId], references: [id], onDelete: Cascade)
+  questionId    Int?
+  question      Question? @relation(fields: [questionId], references: [id])
+  questionText  String    @db.Text
+  options       String?   @db.Text   // JSON array
+  correctAnswer String    @db.Text
+  explanation   String?   @db.Text
+  marks         Int       @default(2)
+  type          String    @default("mcq")
+  chapter       String?
+  difficulty    String    @default("medium")
+  order         Int       @default(0)
+}
+
+model ExamAttempt {
+  id          Int       @id @default(autoincrement())
+  examId      Int
+  exam        ExamPaper @relation(fields: [examId], references: [id])
+  userId      String
+  userName    String
+  answers     String    @db.LongText  // JSON
+  score       Int       @default(0)
+  totalMarks  Int       @default(0)
+  percentage  Float     @default(0)
+  timeTaken   Int       @default(0)
+  analysis    String?   @db.LongText  // JSON topic analysis
+  submittedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([examId])
+  @@index([userId])
+}
+
+// ─── SCHOOL SYSTEM ────────────────────────────────────
+model School {
+  id              Int             @id @default(autoincrement())
+  name            String
+  code            String          @unique   // MSC-XXXX
+  address         String?         @db.Text
+  city            String?
+  state           String?
+  pincode         String?
+  board           String?
+  medium          String?
+  principalName   String?
+  phone           String?
+  email           String?         @unique
+  logoUrl         String?
+  isActive        Boolean         @default(true)
+  isVerified      Boolean         @default(false)
+  plan            String          @default("free")
+  planExpiry      DateTime?
+  storageGB       Int             @default(1)
+  storageUsedMB   Int             @default(0)
+  teachers        SchoolTeacher[]
+  students        SchoolStudent[]
+  classes         SchoolClass[]
+  notices         SchoolNotice[]
+  examPapers      ExamPaper[]
+  homework        Homework[]
+  users           User[]
+  createdAt       DateTime        @default(now())
+
+  @@index([code])
+}
+
+model SchoolClass {
+  id          Int             @id @default(autoincrement())
+  name        String          // "Class 9-A"
+  classLevel  String          // "9"
+  section     String          // "A"
+  subject     String?
+  schoolId    Int
+  school      School          @relation(fields: [schoolId], references: [id])
+  teachers    ClassTeacher[]
+  students    ClassStudent[]
+  attendance  Attendance[]
+  homework    Homework[]
+  liveClasses LiveClass[]
+
+  @@index([schoolId])
+}
+
+model SchoolTeacher {
+  id        Int            @id @default(autoincrement())
+  userId    String
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  schoolId  Int
+  school    School         @relation(fields: [schoolId], references: [id])
+  classes   ClassTeacher[]
+  isActive  Boolean        @default(true)
+  fcmToken  String?
+  createdAt DateTime       @default(now())
+
+  @@index([schoolId])
+  @@unique([schoolId, email])
+}
+
+model SchoolStudent {
+  id             Int             @id @default(autoincrement())
+  userId         String?
+  name           String
+  rollNumber     String?
+  phone          String?
+  parentPhone    String?
+  email          String?
+  schoolId       Int
+  school         School          @relation(fields: [schoolId], references: [id])
+  classes        ClassStudent[]
+  attendance     Attendance[]
+  submissions    HomeworkSubmit[]
+  isActive       Boolean         @default(true)
+  fcmToken       String?
+  parentFcmToken String?
+  createdAt      DateTime        @default(now())
+
+  @@index([schoolId])
+}
+
+model ClassTeacher {
+  id             Int           @id @default(autoincrement())
+  classId        Int
+  class          SchoolClass   @relation(fields: [classId], references: [id])
+  teacherId      Int
+  teacher        SchoolTeacher @relation(fields: [teacherId], references: [id])
+  isClassTeacher Boolean       @default(false)
+
+  @@unique([classId, teacherId])
+}
+
+model ClassStudent {
+  id        Int           @id @default(autoincrement())
+  classId   Int
+  class     SchoolClass   @relation(fields: [classId], references: [id])
+  studentId Int
+  student   SchoolStudent @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId])
+}
+
+model Attendance {
+  id        Int           @id @default(autoincrement())
+  classId   Int
+  class     SchoolClass   @relation(fields: [classId], references: [id])
+  studentId Int
+  student   SchoolStudent @relation(fields: [studentId], references: [id])
+  date      DateTime
+  status    String        // present|absent|late|holiday
+  markedBy  String
+  note      String?
+  createdAt DateTime      @default(now())
+
+  @@unique([classId, studentId, date])
+  @@index([classId, date])
+}
+
+model Homework {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String           @db.Text
+  subject     String
+  dueDate     DateTime
+  attachments String?          @db.Text  // JSON
+  classId     Int
+  class       SchoolClass      @relation(fields: [classId], references: [id])
+  schoolId    Int
+  school      School           @relation(fields: [schoolId], references: [id])
+  teacherId   String
+  submissions HomeworkSubmit[]
+  createdAt   DateTime         @default(now())
+}
+
+model HomeworkSubmit {
+  id          Int           @id @default(autoincrement())
+  homeworkId  Int
+  homework    Homework      @relation(fields: [homeworkId], references: [id])
+  studentId   Int
+  student     SchoolStudent @relation(fields: [studentId], references: [id])
+  files       String?       @db.Text
+  note        String?       @db.Text
+  marks       Int?
+  feedback    String?       @db.Text
+  status      String        @default("submitted")
+  submittedAt DateTime      @default(now())
+}
+
+model SchoolNotice {
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String   @db.Text
+  type       String   @default("general")
+  priority   String   @default("normal")
+  targetRole String   @default("all")
+  schoolId   Int
+  school     School   @relation(fields: [schoolId], references: [id])
+  sentBy     String
+  isPushed   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model LiveClass {
+  id           Int         @id @default(autoincrement())
+  title        String
+  subject      String
+  classId      Int
+  class        SchoolClass @relation(fields: [classId], references: [id])
+  teacherId    String
+  jitsiRoomId  String
+  scheduledAt  DateTime
+  duration     Int         @default(45)
+  status       String      @default("scheduled")
+  recordingUrl String?
+  createdAt    DateTime    @default(now())
+}
+
+// ─── BLOG ─────────────────────────────────────────────
+model Blog {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String   @db.LongText
+  excerpt   String?  @db.Text
+  coverImg  String?
+  author    String?
+  published Boolean  @default(false)
+  metaTitle String?
+  metaDesc  String?
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── CONTENT PAGES (Section 17) ────────────────────────
+model ContentPage {
+  id            Int      @id @default(autoincrement())
+  type          String   // "chapter" | "question" | "formula" | "example" | "pdf-extract"
+  title         String
+  slug          String   @unique
+  content       String   @db.LongText
+  subjectId     Int?
+  classLevel    String?
+  board         String?
+  addedBy       String
+  addedByRole   String
+  schoolId      Int?
+  isPublic      Boolean  @default(true)
+  isApproved    Boolean  @default(false)
+  approvedBy    String?
+  metaTitle     String?  @db.Text
+  metaDesc      String?  @db.Text
+  metaKeywords  String?  @db.Text
+  schemaJson    String?  @db.LongText
+  views         Int      @default(0)
+  isIndexed     Boolean  @default(false)
+  sourcePdfId   Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([slug])
+  @@index([subjectId, classLevel])
+  @@index([addedBy])
+  @@index([isPublic, isApproved])
+}
+
+model Concept {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String  @db.LongText
+  chapterId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  order     Int     @default(0)
+}
+
+model BulkImport {
+  id          Int      @id @default(autoincrement())
+  fileName    String
+  fileUrl     String
+  type        String
+  totalRows   Int      @default(0)
+  successRows Int      @default(0)
+  failedRows  Int      @default(0)
+  errors      String?  @db.Text
+  importedBy  String
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+}

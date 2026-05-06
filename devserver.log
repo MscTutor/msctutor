@@ -1,0 +1,75 @@
+
+> msctutor@4.0.0 dev
+> next dev
+
+  ▲ Next.js 14.2.0
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 9.6s
+ ○ Compiling / ...
+ ✓ Compiled / in 9s (587 modules)
+ ✓ Compiled in 1210ms (269 modules)
+ GET / 200 in 10354ms
+ ○ Compiling /api/community/comment ...
+ ✓ Compiled /api/community/comment in 5.5s (620 modules)
+prisma:error 
+Invalid `prisma.comment.findMany()` invocation:
+
+
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:7
+   | 
+ 6 |   provider = "mysql"
+ 7 |   url      = env("DATABASE_URL")
+   | 
+
+Validation Error Count: 1
+prisma:error 
+Invalid `prisma.comment.count()` invocation:
+
+
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:7
+   | 
+ 6 |   provider = "mysql"
+ 7 |   url      = env("DATABASE_URL")
+   | 
+
+Validation Error Count: 1
+ GET /api/community/comment?branch=general&limit=5 200 in 6160ms
+ GET / 200 in 6384ms
+ GET /mock-test 200 in 6415ms
+ GET /ask 200 in 6419ms
+prisma:error 
+Invalid `prisma.comment.findMany()` invocation:
+
+
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:7
+   | 
+ 6 |   provider = "mysql"
+ 7 |   url      = env("DATABASE_URL")
+   | 
+
+Validation Error Count: 1
+prisma:error 
+Invalid `prisma.comment.count()` invocation:
+
+
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:7
+   | 
+ 6 |   provider = "mysql"
+ 7 |   url      = env("DATABASE_URL")
+   | 
+
+Validation Error Count: 1
+ GET /api/community/comment?branch=general&limit=5 200 in 99ms
+ ○ Compiling /offline ...
+ ✓ Compiled /offline in 971ms (635 modules)
+ GET /calculators 200 in 1736ms
+ GET /offline 200 in 1729ms
+ GET /formulas 200 in 1789ms
+ ○ Compiling /subject/[slug] ...
+ ✓ Compiled /subject/[slug] in 1773ms (644 modules)
