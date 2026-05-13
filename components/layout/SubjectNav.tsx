@@ -1,7 +1,9 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { NAV_MATH_CHAPTERS, NAV_SCIENCE_CHAPTERS, NAV_COMMERCE_CHAPTERS } from '@/lib/constants'
+import { loadMessages, t } from '@/lib/i18n-client'
 
 function DropLink({ href, title, badge, isNew }: { href: string; title: string; badge?: string; isNew?: boolean }) {
   return (
@@ -28,45 +30,51 @@ function ColTitle({ children }: { children: React.ReactNode }) {
 
 export default function SubjectNav() {
   const path = usePathname()
+  const [locale, setLocale] = useState('en')
+  const [messages, setMessages] = useState<Record<string, any>>({})
   const isActive = (href: string) => path === href || path.startsWith(href + '/')
+
+  useEffect(() => {
+    const saved = localStorage.getItem('msc_locale') || 'en'
+    setLocale(saved)
+    loadMessages(saved as any).then(setMessages)
+  }, [])
 
   return (
     <nav
       style={{ height: 'var(--nav-h)' }}
       className="bg-white dark:bg-[#111827] border-b-2 border-primary-600 flex items-center px-3 gap-1 overflow-x-auto hide-scrollbar"
+      data-locale={locale}
     >
-      {/* Home */}
-      <NavItem href="/" active={path === '/'}>🏠 Home</NavItem>
+      <NavItem href="/" active={path === '/'}>🏠 {t(messages, 'nav.home', 'Home')}</NavItem>
       <Divider />
 
-      {/* Mathematics */}
       <div className="nav-dropdown relative inline-flex items-center">
-        <NavItem href="/subject/mathematics" active={isActive('/subject/mathematics')}>➕ Mathematics ▾</NavItem>
+        <NavItem href="/subject/mathematics" active={isActive('/subject/mathematics')}>➕ {t(messages, 'nav.mathematics', 'Mathematics')} ▾</NavItem>
         <div className="drop-panel absolute top-[calc(100%+6px)] left-0 bg-white dark:bg-[#111827] border border-[#dde5f5] dark:border-[#1e2d4a] rounded-[14px] shadow-lg min-w-[560px] z-[400] p-4 flex gap-4 animate-fade-in">
           <div className="flex-1">
-            <ColTitle>📘 Class 9–10</ColTitle>
+            <ColTitle>📘 Class 9-10</ColTitle>
             {NAV_MATH_CHAPTERS.class9_10.map(c => (
               <DropLink key={c.slug} href={`/subject/mathematics/chapter/${c.slug}`} title={c.title} badge={c.badge} isNew={c.isNew} />
             ))}
           </div>
           <div className="flex-1">
-            <ColTitle>📗 Class 11–12</ColTitle>
+            <ColTitle>📗 Class 11-12</ColTitle>
             {NAV_MATH_CHAPTERS.class11_12.map(c => (
               <DropLink key={c.slug} href={`/subject/mathematics/chapter/${c.slug}`} title={c.title} badge={c.badge} isNew={c.isNew} />
             ))}
           </div>
           <div className="min-w-[130px]">
             <ColTitle>🏆 Tools</ColTitle>
-            <DropLink href="/calculators"                title="🧮 Calculators" />
-            <DropLink href="/formulas"                   title="📋 Formula Bank" />
+            <DropLink href="/calculators" title="🧮 Calculators" />
+            <DropLink href="/formulas" title="📋 Formula Bank" />
             <DropLink href="/mock-test?subject=Mathematics" title="📝 Math Mock Test" />
           </div>
         </div>
       </div>
 
-      {/* Science */}
       <div className="nav-dropdown relative inline-flex items-center">
-        <NavItem href="/subject/science" active={isActive('/subject/science')}>⚗️ Science ▾</NavItem>
+        <NavItem href="/subject/science" active={isActive('/subject/science')}>⚗️ {t(messages, 'nav.science', 'Science')} ▾</NavItem>
         <div className="drop-panel absolute top-[calc(100%+6px)] left-0 bg-white dark:bg-[#111827] border border-[#dde5f5] dark:border-[#1e2d4a] rounded-[14px] shadow-lg min-w-[560px] z-[400] p-4 flex gap-4 animate-fade-in">
           <div className="flex-1">
             <ColTitle>🔬 Physics</ColTitle>
@@ -89,9 +97,8 @@ export default function SubjectNav() {
         </div>
       </div>
 
-      {/* Commerce */}
       <div className="nav-dropdown relative inline-flex items-center">
-        <NavItem href="/subject/commerce" active={isActive('/subject/commerce')}>📊 Commerce ▾</NavItem>
+        <NavItem href="/subject/commerce" active={isActive('/subject/commerce')}>📊 {t(messages, 'nav.commerce', 'Commerce')} ▾</NavItem>
         <div className="drop-panel absolute top-[calc(100%+6px)] left-0 bg-white dark:bg-[#111827] border border-[#dde5f5] dark:border-[#1e2d4a] rounded-[14px] shadow-lg min-w-[480px] z-[400] p-4 flex gap-4 animate-fade-in">
           <div className="flex-1">
             <ColTitle>📒 Accountancy</ColTitle>
@@ -114,9 +121,8 @@ export default function SubjectNav() {
         </div>
       </div>
 
-      {/* Classes dropdown */}
       <div className="nav-dropdown relative inline-flex items-center">
-        <NavItem href="/class" active={isActive('/class')}>🎓 Classes ▾</NavItem>
+        <NavItem href="/class" active={isActive('/class')}>🎓 {t(messages, 'nav.classes', 'Classes')} ▾</NavItem>
         <div className="drop-panel absolute top-[calc(100%+6px)] left-0 bg-white dark:bg-[#111827] border border-[#dde5f5] dark:border-[#1e2d4a] rounded-[14px] shadow-lg w-[240px] z-[400] p-3 flex-col animate-fade-in">
           <ColTitle>Select Class</ColTitle>
           <div className="grid grid-cols-4 gap-1.5">
@@ -138,15 +144,15 @@ export default function SubjectNav() {
       </div>
 
       <Divider />
-      <NavItem href="/mock-test"   active={isActive('/mock-test')}>📝 Mock Test</NavItem>
-      <NavItem href="/pricing"     active={isActive('/pricing')}>💰 Pricing</NavItem>
-      <NavItem href="/community"   active={isActive('/community')}>💬 Community</NavItem>
+      <NavItem href="/mock-test" active={isActive('/mock-test')}>📝 {t(messages, 'nav.mockTest', 'Mock Test')}</NavItem>
+      <NavItem href="/pricing" active={isActive('/pricing')}>💰 {t(messages, 'nav.pricing', 'Pricing')}</NavItem>
+      <NavItem href="/community" active={isActive('/community')}>💬 {t(messages, 'nav.community', 'Community')}</NavItem>
       <div className="nav-dropdown relative inline-flex items-center">
-        <NavItem href="/school/register" active={false}>🏫 Schools ▾</NavItem>
+        <NavItem href="/school/register" active={false}>🏫 {t(messages, 'nav.schools', 'Schools')} ▾</NavItem>
         <div className="drop-panel absolute top-[calc(100%+6px)] right-0 bg-white dark:bg-[#111827] border border-[#dde5f5] dark:border-[#1e2d4a] rounded-[14px] shadow-lg w-[220px] z-[400] p-3 flex-col animate-fade-in">
-          <DropLink href="/school/register"   title="🏫 Register School" />
-          <DropLink href="/school/login"      title="🔑 School Login" />
-          <DropLink href="/school-dashboard"  title="📊 School Dashboard" />
+          <DropLink href="/school/register" title="🏫 Register School" />
+          <DropLink href="/school/login" title="🔑 School Login" />
+          <DropLink href="/school-dashboard" title="📊 School Dashboard" />
           <DropLink href="/teacher/dashboard" title="👨‍🏫 Teacher Dashboard" />
         </div>
       </div>
