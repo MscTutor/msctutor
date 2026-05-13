@@ -10,7 +10,7 @@ const MAX_API_AGE  = 5 * 60 * 1000  // 5 min
 const STATIC_ASSETS = [
   '/', '/ask', '/mock-test', '/formulas', '/calculators', '/offline',
   '/ai-teacher', '/formulas', '/class',
-  '/manifest.json', '/favicon.svg',
+  '/manifest.json', '/msctutor-logo.png',
 ]
 
 const CACHE_FIRST = ['/icons/', '/og/', '/_next/static/', '/_next/image']

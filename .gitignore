@@ -33,3 +33,18 @@ next-env.d.ts
 # prisma
 prisma/dev.db
 prisma/dev.db-journal
+
+# Logs and build artifacts
+*.log
+*.tsbuildinfo
+
+# Codex/delivery junk
+ecosystem.config.js
+*_delivery_note.md
+COMPLETE_DEPLOY_GUIDE.md
+DEPLOY.md
+VERCEL_DEPLOY.md
+PRODUCTION_AUDIT_REPORT.md
+PRODUCTION_DEPLOY_CHECKLIST.md
+REMAINING_GAPS_REPORT.md
+ECOSYSTEM_MATURITY_REPORT.md

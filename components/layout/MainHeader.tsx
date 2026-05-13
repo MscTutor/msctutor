@@ -59,7 +59,8 @@ export default function MainHeader() {
 
       {/* Logo */}
       <Link href="/" style={{ display:'flex', alignItems:'center', gap:6, textDecoration:'none', flexShrink:0 }}>
-        <div style={{ width:36, height:36, borderRadius:9, background:'linear-gradient(135deg,#1a3a6b,#0e2347)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:900, fontSize:17 }}>M</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/msctutor-logo.png" alt="MscTutor" style={{ width:46, height:46, objectFit:'contain', borderRadius:10, flexShrink:0 }} />
         <span style={{ fontWeight:900, fontSize:19, color:'#1a3a6b', letterSpacing:-0.5 }}>Msc<span style={{ color:'#f59e0b' }}>Tutor</span></span>
       </Link>
 

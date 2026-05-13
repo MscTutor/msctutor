@@ -52,8 +52,8 @@ export const metadata: Metadata = {
   robots:   { index:true, follow:true, googleBot:{ index:true, follow:true, 'max-image-preview':'large', 'max-snippet':-1 } },
   manifest: '/manifest.json',
   icons: {
-    icon:     '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon:     '/msctutor-logo.png',
+    shortcut: '/msctutor-logo.png',
     apple:    '/icons/apple-touch-icon.png',
   },
 }
@@ -64,8 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/msctutor-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <meta name="theme-color" content="#1a3a6b" />
         <meta name="application-name" content="MscTutor" />
