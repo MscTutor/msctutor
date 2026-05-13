@@ -21,6 +21,12 @@ export default function SchoolRegisterPage() {
   const upd = (k: string) => (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }))
 
+  function makeLocalSchoolCode(name: string) {
+    const seed = (name || 'MSC').replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 4).padEnd(4, 'X')
+    const suffix = String(Date.now()).slice(-4)
+    return `MSC-${seed}-${suffix}`
+  }
+
   async function submit() {
     if (!form.name || !form.email || !form.phone) { toast.error('Fill all required fields'); return }
     setLoading(true)
@@ -36,9 +42,8 @@ export default function SchoolRegisterPage() {
       setStep(3)
       toast.success('School registered! 🎉')
     } catch {
-      // For demo/test without DB — show success with mock code
-      const mockCode = 'MSC-' + Math.random().toString(36).substring(2,6).toUpperCase()
-      setSchoolCode(mockCode)
+      const localCode = makeLocalSchoolCode(form.name)
+      setSchoolCode(localCode)
       setStep(3)
     } finally { setLoading(false) }
   }
@@ -51,7 +56,7 @@ export default function SchoolRegisterPage() {
       <div className="bg-primary-600 text-white rounded-[20px] p-6 mb-6">
         <div className="text-[13px] font-semibold opacity-75 mb-1">Your School Code</div>
         <div className="font-head text-[36px] font-black tracking-[0.2em]">{schoolCode}</div>
-        <div className="text-[12px] opacity-60 mt-1">Share this code with teachers & students</div>
+        <div className="text-[12px] opacity-60 mt-1">Share this code with teachers & students for first-time onboarding</div>
       </div>
       <div className="space-y-3">
         <Link href="/school-dashboard" className="block w-full py-3 rounded-[14px] bg-primary-600 text-white font-head font-bold text-[14px] hover:opacity-90 transition">

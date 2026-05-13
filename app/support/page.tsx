@@ -27,7 +27,7 @@ const FAQS = [
   { cat: '⚙️ Technical', items: [
     { q: 'Dark mode kaise lagaein?', a: 'Top bar mein 🌙 icon click karo. Preference save ho jaati hai.' },
     { q: 'Hindi mein answers kaise milenge?', a: 'Top bar mein language selector se "हिंदी" select karo. AI Hindi mein answer dega.' },
-    { q: 'Android app kab aayega?', a: 'PWA (Progressive Web App) abhi available hai — Chrome mein site kholo, "Add to Home Screen" click karo. Native app coming soon on Play Store.' },
+    { q: 'Android app ka best use kya hai?', a: 'PWA (Progressive Web App) abhi available hai — Chrome mein site kholo, "Add to Home Screen" click karo. Isse website app jaisi open hoti hai aur fast access milta hai.' },
   ]},
 ]
 

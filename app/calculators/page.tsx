@@ -144,6 +144,32 @@ const CALC_COMPONENTS: Record<string, React.FC> = {
   unit: UnitCalc,
 }
 
+function CalculatorGuide({ name, desc }: { name?: string; desc?: string }) {
+  return (
+    <div className="text-center py-8">
+      <div className="max-w-[520px] mx-auto bg-[#f8faff] border border-[#dde5f5] rounded-[16px] p-5">
+        <p className="text-[15px] font-bold text-[#0f1f3d] mb-2">{name}</p>
+        <p className="text-[13px] text-[#5a6a8a] leading-relaxed mb-4">{desc}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+          {[
+            'Use the Scientific calculator for quick arithmetic, powers and roots.',
+            'Use Geometry for measurement and shape-based calculations.',
+            'Use Percentage and Interest for school commerce and daily maths.',
+            'For chapter-wise doubt solving, open Ask AI with your exact question.',
+          ].map((item) => (
+            <div key={item} className="rounded-[12px] bg-white border border-[#dde5f5] p-3 text-[12.5px] text-[#5a6a8a]">
+              {item}
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 text-[12px] text-[#1a3a6b] font-semibold">
+          This section is ready for guided use right now even before a dedicated solver is connected.
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function CalculatorsPage() {
   const [active, setActive] = useState('percent')
   const ActiveCalc = CALC_COMPONENTS[active]
@@ -185,12 +211,10 @@ export default function CalculatorsPage() {
           {ActiveCalc
             ? <ActiveCalc />
             : (
-              <div className="text-center py-10">
-                <div className="text-[48px] mb-3">{CALCS.find(c=>c.id===active)?.icon}</div>
-                <p className="text-[14px] text-[#5a6a8a] mb-1 font-semibold">{CALCS.find(c=>c.id===active)?.name}</p>
-                <p className="text-[13px] text-[#5a6a8a]">{CALCS.find(c=>c.id===active)?.desc}</p>
-                <p className="text-[12px] text-[#5a6a8a] mt-3">Coming soon...</p>
-              </div>
+              <CalculatorGuide
+                name={CALCS.find(c=>c.id===active)?.name}
+                desc={CALCS.find(c=>c.id===active)?.desc}
+              />
             )
           }
         </div>
