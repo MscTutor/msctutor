@@ -1,14 +1,20 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
-
-export const metadata: Metadata = {
-  title: 'Search — MscTutor',
-  description: 'Search questions, chapters, formulas across all subjects.',
-  robots: { index: false },
-}
+import { JsonLd, breadcrumbSchema } from '@/lib/seo/structured-data'
 
 interface Props { searchParams: { q?: string } }
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const q = searchParams.q?.trim() ?? ''
+  if (!q) return { title: 'Search | MscTutor', robots: { index: false, follow: false } }
+  return {
+    title:       `Search: "${q}" | MscTutor`,
+    description: `AI solutions for "${q}" — step-by-step NCERT answers. Class 1-12, all subjects.`,
+    robots:      { index: true, follow: true },
+    alternates:  { canonical: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://msctutor.in'}/search?q=${encodeURIComponent(q)}` },
+  }
+}
 
 export default async function SearchPage({ searchParams }: Props) {
   const query = searchParams.q?.trim() ?? ''
@@ -90,6 +96,7 @@ export default async function SearchPage({ searchParams }: Props) {
           </Link>
         </div>
       ) : null}
+      <JsonLd data={breadcrumbSchema([{ name:'Home', url:'/' }, { name:'Search', url:'/search' }])} />
     </div>
   )
 }

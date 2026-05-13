@@ -5,12 +5,10 @@ import CommentSection from '@/components/comments/CommentSection'
 import HeroSlider from '@/components/layout/HeroSlider'
 import { SITE } from '@/lib/constants'
 import { getPlatformContentStats } from '@/lib/global-content'
+import { buildMetadata } from '@/lib/seo/metadata'
+import { JsonLd, homePageSchemas } from '@/lib/seo/structured-data'
 
-export const metadata: Metadata = {
-  title: `${SITE.name} - Free AI Education Platform`,
-  description: 'Ask any Math, Science, Commerce or school question and get chapter-wise AI support, formulas, experiments and learning paths.',
-  keywords: 'free education, AI tutor, NCERT, chapter-wise learning, mock test, class 1 to 12',
-}
+export const metadata: Metadata = buildMetadata({ pageKey:'home', path:'/' })
 
 const ROLE_CARDS = [
   { icon: '👨‍🎓', title: 'Student', desc: 'Ask doubts, read chapters, take mock tests and learn with AI.', href: '/dashboard' },
@@ -97,6 +95,7 @@ export default function HomePage() {
       <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 1rem 4rem' }}>
         <CommentSection branch="general" pageUrl="/" />
       </section>
+      <JsonLd data={homePageSchemas()} />
     </>
   )
 }

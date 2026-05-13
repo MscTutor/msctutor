@@ -3,6 +3,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SITE } from '@/lib/constants'
 import { getUnifiedSubjectForClass } from '@/lib/global-content'
+import { getSubjectPageParams, REVALIDATE } from '@/lib/static-params'
+import { buildSubjectMetadata } from '@/lib/seo/metadata'
+
+export function generateStaticParams() { return getSubjectPageParams() }
+export const revalidate = REVALIDATE.SUBJECT_PAGE
 
 interface Props {
   params: { classId: string; subject: string }
@@ -29,13 +34,7 @@ const SUBJECT_META: Record<string, { name: string; icon: string; color: string; 
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const subjectMeta = SUBJECT_META[params.subject]
-  const name = subjectMeta?.name ?? params.subject
-  return {
-    title: `Class ${params.classId} ${name} - All Chapters | ${SITE.name}`,
-    description: `Explore Class ${params.classId} ${name} chapters with formulas, experiments, videos and AI support.`,
-    alternates: { canonical: `${SITE.url}/class/${params.classId}/${params.subject}` },
-  }
+  return buildSubjectMetadata(params.classId, params.subject)
 }
 
 export default function ClassSubjectPage({ params }: Props) {
@@ -75,7 +74,7 @@ export default function ClassSubjectPage({ params }: Props) {
                 Class {params.classId} - {subject.name}
               </h1>
               <p style={{ opacity: 0.85, fontSize: 15, margin: 0, maxWidth: 720, lineHeight: 1.6 }}>
-                First open this page for all chapter names and content names. Then open each chapter and each content topic on its own page with formula links and example pages.
+                Complete NCERT syllabus — all chapters, topics, formulas and experiments. Click any chapter to start learning with AI support.
               </p>
             </div>
           </div>
@@ -106,6 +105,33 @@ export default function ClassSubjectPage({ params }: Props) {
           <Link href="/ask" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: '#f3f4f6', color: '#111', borderRadius: 12, textDecoration: 'none', fontWeight: 700, fontSize: 14, border: '1.5px solid #e5e7eb' }}>
             Ask AI
           </Link>
+        </div>
+
+        {/* Syllabus overview bar */}
+        <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e5e7eb', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6b7280', marginBottom: 6, fontWeight: 600 }}>
+              <span>Syllabus Coverage</span>
+              <span>{subject.chapters.filter(c => c.isRich).length}/{subject.chapters.length} chapters with full content</span>
+            </div>
+            <div style={{ height: 7, background: '#f3f4f6', borderRadius: 4, overflow: 'hidden' }}>
+              <div style={{ height: '100%', background: `linear-gradient(90deg, ${meta.color}, ${meta.color}cc)`, borderRadius: 4, width: `${Math.round((subject.chapters.filter(c => c.isRich).length / Math.max(subject.chapters.length, 1)) * 100)}%`, transition: 'width 0.6s ease' }} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 18, fontWeight: 900, color: meta.color }}>{totalFormulas}</div>
+              <div style={{ fontSize: 10, color: '#6b7280' }}>Formulas</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 18, fontWeight: 900, color: '#0a5e3f' }}>{totalExperiments}</div>
+              <div style={{ fontSize: 10, color: '#6b7280' }}>Experiments</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 18, fontWeight: 900, color: '#dc2626' }}>{totalVideos}</div>
+              <div style={{ fontSize: 10, color: '#6b7280' }}>Videos</div>
+            </div>
+          </div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>

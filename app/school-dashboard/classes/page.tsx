@@ -1,6 +1,7 @@
 // app/school-dashboard/classes/page.tsx
 'use client'
 import { useEffect, useState } from 'react'
+
 interface SchoolClass { id: number; name: string; classLevel: string; section: string; students: { id: number }[]; teachers: { id: number }[] }
 export default function ClassesPage() {
   const [classes, setClasses] = useState<SchoolClass[]>([])

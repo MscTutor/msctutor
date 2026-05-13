@@ -1,63 +1,48 @@
-import { MetadataRoute } from 'next'
-import prisma from '@/lib/prisma'
-import { SITE, SUBJECTS } from '@/lib/constants'
-import { ALL_CLASSES } from '@/lib/ncert-syllabus'
+// app/sitemap.ts — Complete multilingual sitemap with hreflang
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = SITE.url
+import type { MetadataRoute } from 'next'
 
-  // Static pages
-  const static_pages: MetadataRoute.Sitemap = [
-    { url: base,                priority: 1.0, changeFrequency: 'daily'   },
-    { url: `${base}/ask`,       priority: 0.9, changeFrequency: 'daily'   },
-    { url: `${base}/mock-test`, priority: 0.9, changeFrequency: 'weekly'  },
-    { url: `${base}/pricing`,   priority: 0.8, changeFrequency: 'monthly' },
-    { url: `${base}/community`, priority: 0.7, changeFrequency: 'daily'   },
-    { url: `${base}/formulas`,  priority: 0.8, changeFrequency: 'weekly'  },
-    { url: `${base}/calculators`,priority: 0.7, changeFrequency: 'monthly'},
-    { url: `${base}/about`,     priority: 0.6, changeFrequency: 'monthly' },
-    { url: `${base}/contact`,   priority: 0.6, changeFrequency: 'monthly' },
-    { url: `${base}/privacy`,   priority: 0.5, changeFrequency: 'yearly'  },
-    { url: `${base}/terms`,     priority: 0.5, changeFrequency: 'yearly'  },
-    { url: `${base}/dmca`,      priority: 0.4, changeFrequency: 'yearly'  },
-    { url: `${base}/class`,     priority: 0.8, changeFrequency: 'weekly'  },
-    { url: `${base}/subject`,   priority: 0.8, changeFrequency: 'weekly'  },
-    ...SUBJECTS.map(s => ({ url: `${base}/subject/${s.slug}`, priority: 0.8 as const, changeFrequency: 'weekly' as const })),
-    ...['1','2','3','4','5','6','7','8','9','10','11','12'].map(c => ({ url: `${base}/class/${c}`, priority: 0.7 as const, changeFrequency: 'weekly' as const })),
+const BASE    = process.env.NEXT_PUBLIC_APP_URL ?? 'https://msctutor.in'
+const LOCALES = ['en','hi','bn','gu','mr','ta','te','pa','ur','as','ar','fr']
+const IETF    = { en:'en-IN',hi:'hi-IN',bn:'bn-IN',gu:'gu-IN',mr:'mr-IN',ta:'ta-IN',te:'te-IN',pa:'pa-IN',ur:'ur-PK',as:'as-IN',ar:'ar-SA',fr:'fr-FR' } as Record<string,string>
+
+function entry(path: string, priority: number, freq: MetadataRoute.Sitemap[0]['changeFrequency']) {
+  const langs: Record<string,string> = { 'x-default': `${BASE}${path}` }
+  for (const l of LOCALES) langs[IETF[l]??l] = l==='en' ? `${BASE}${path}` : `${BASE}/${l}${path}`
+  return { url:`${BASE}${path}`, lastModified:new Date(), changeFrequency:freq, priority, alternates:{ languages:langs } }
+}
+
+const CLASSES  = ['6','7','8','9','10','11','12']
+const SUBJECTS = ['mathematics','physics','chemistry','biology','english','hindi','social-science','science','accountancy','economics']
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    // Core
+    entry('/',            1.0, 'daily'),
+    entry('/ask',         0.95,'daily'),
+    entry('/ai-teacher',  0.95,'daily'),
+    entry('/formulas',    0.90,'weekly'),
+    entry('/mock-test',   0.90,'weekly'),
+    entry('/calculators', 0.80,'monthly'),
+    entry('/community',   0.75,'daily'),
+    entry('/class',       0.85,'weekly'),
+    entry('/pricing',     0.65,'monthly'),
+    entry('/blog',        0.70,'daily'),
+    entry('/register',    0.55,'monthly'),
+    entry('/login',       0.45,'monthly'),
+    entry('/about',       0.40,'monthly'),
+    entry('/contact',     0.40,'monthly'),
+    entry('/support',     0.35,'monthly'),
+    entry('/privacy',     0.20,'yearly'),
+    entry('/terms',       0.20,'yearly'),
+    // Class pages
+    ...CLASSES.map(c => entry(`/class/${c}`, 0.85,'weekly')),
+    // Subject pages
+    ...CLASSES.flatMap(c => SUBJECTS.map(s => entry(`/class/${c}/${s}`, 0.80,'weekly'))),
+    // Class 12 streams
+    entry('/class/12/humanities', 0.80,'weekly'),
+    entry('/class/12/commerce',   0.80,'weekly'),
+    entry('/class/11/humanities', 0.75,'weekly'),
+    entry('/class/11/commerce',   0.75,'weekly'),
   ]
-
-  // NCERT chapter learn pages — all classes/subjects/chapters
-  const ncertChapterPages: MetadataRoute.Sitemap = []
-  for (const cls of ALL_CLASSES) {
-    for (const subject of cls.subjects) {
-      // Class+subject index page
-      ncertChapterPages.push({
-        url: `${base}/class/${cls.classLevel}/${subject.slug}`,
-        priority: 0.8,
-        changeFrequency: 'weekly' as const,
-      })
-      // Each chapter learn page
-      for (const chapter of subject.chapters) {
-        ncertChapterPages.push({
-          url: `${base}/learn/${cls.classLevel}/${subject.slug}/${chapter.id}`,
-          priority: 0.9,
-          changeFrequency: 'weekly' as const,
-        })
-      }
-    }
-  }
-
-  // Dynamic question pages from DB
-  let questionPages: MetadataRoute.Sitemap = []
-  let chapterPages:  MetadataRoute.Sitemap = []
-  try {
-    const [questions, chapters] = await Promise.all([
-      prisma.question.findMany({ where: { isPublic: true }, select: { slug: true, updatedAt: true }, take: 10000, orderBy: { createdAt: 'desc' } }),
-      prisma.chapter.findMany({ where: { isPublic: true }, select: { slug: true, updatedAt: true, subject: { select: { slug: true } } } }),
-    ])
-    questionPages = questions.map(q => ({ url: `${base}/question/${q.slug}`, lastModified: q.updatedAt, priority: 0.7, changeFrequency: 'monthly' as const }))
-    chapterPages  = chapters.map(c => ({ url: `${base}/subject/${c.subject?.slug ?? 'general'}/chapter/${c.slug}`, lastModified: c.updatedAt, priority: 0.8, changeFrequency: 'weekly' as const }))
-  } catch { /* DB not ready */ }
-
-  return [...static_pages, ...ncertChapterPages, ...questionPages, ...chapterPages]
 }

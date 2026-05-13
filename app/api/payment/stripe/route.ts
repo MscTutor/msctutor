@@ -6,16 +6,7 @@ import { prisma }       from '@/lib/prisma'
 import { getAuthUser }  from '@/lib/auth'
 import { PLANS, SITE }  from '@/lib/constants'
 
-export const dynamic = 'force-dynamic'
-
-function getStripeClient() {
-  const secretKey = process.env.STRIPE_SECRET_KEY
-  if (!secretKey) {
-    return null
-  }
-
-  return new Stripe(secretKey, { apiVersion: '2024-04-10' })
-}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', { apiVersion: '2024-04-10' })
 
 const STRIPE_PRICES: Record<string, number> = {
   starter: 49,
@@ -25,11 +16,6 @@ const STRIPE_PRICES: Record<string, number> = {
 
 export async function POST(req: Request) {
   try {
-    const stripe = getStripeClient()
-    if (!stripe) {
-      return NextResponse.json({ error: 'Stripe is not configured yet' }, { status: 503 })
-    }
-
     const user = await getAuthUser(req)
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -62,11 +48,6 @@ export async function POST(req: Request) {
 
 // Stripe webhook
 export async function PUT(req: Request) {
-  const stripe = getStripeClient()
-  if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) {
-    return NextResponse.json({ error: 'Stripe is not configured yet' }, { status: 503 })
-  }
-
   const body = await req.text()
   const sig  = req.headers.get('stripe-signature') ?? ''
 

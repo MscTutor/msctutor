@@ -657,9 +657,25 @@ export const CLASS10: ClassData = {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// MASTER DATABASE EXPORT
+// IMPORT CLASS 7, 8, 11, 12
 // ══════════════════════════════════════════════════════════════════
-export const ALL_CLASS_DATA: ClassData[] = [CLASS6, CLASS9, CLASS10]
+export { CLASS7, CLASS8 } from './ncert-master-7-8'
+export { CLASS11, CLASS12 } from './ncert-master-11-12'
+import { CLASS7, CLASS8 } from './ncert-master-7-8'
+import { CLASS11, CLASS12 } from './ncert-master-11-12'
+
+// ══════════════════════════════════════════════════════════════════
+// MASTER DATABASE EXPORT — All Classes 1-12
+// ══════════════════════════════════════════════════════════════════
+export const ALL_CLASS_DATA: ClassData[] = [
+  CLASS6,
+  CLASS7,
+  CLASS8,
+  CLASS9,
+  CLASS10,
+  CLASS11,
+  CLASS12,
+]
 
 export function getClassData(classLevel: string): ClassData | null {
   return ALL_CLASS_DATA.find(c => c.classLevel === classLevel) ?? null
@@ -685,4 +701,43 @@ export function getAllChapters(): { classLevel: string; subjectSlug: string; cha
     }
   }
   return all
+}
+
+// Quick search across all chapters
+export function searchChapters(query: string): { classLevel: string; subjectSlug: string; chapter: Chapter }[] {
+  const q = query.toLowerCase()
+  return getAllChapters().filter(({ chapter }) =>
+    chapter.title.toLowerCase().includes(q) ||
+    chapter.description.toLowerCase().includes(q) ||
+    chapter.keyTerms.some(t => t.toLowerCase().includes(q))
+  )
+}
+
+// Get all chapters for a class (all subjects)
+export function getClassAllChapters(classLevel: string): { subjectSlug: string; subjectName: string; chapter: Chapter }[] {
+  const cls = getClassData(classLevel)
+  if (!cls) return []
+  const all: { subjectSlug: string; subjectName: string; chapter: Chapter }[] = []
+  for (const sub of cls.subjects) {
+    for (const ch of sub.chapters) {
+      all.push({ subjectSlug: sub.slug, subjectName: sub.name, chapter: ch })
+    }
+  }
+  return all
+}
+
+// Stats for admin dashboard
+export function getMasterStats() {
+  let totalChapters = 0, totalFormulas = 0, totalExps = 0, totalVideos = 0
+  for (const cls of ALL_CLASS_DATA) {
+    for (const sub of cls.subjects) {
+      totalChapters += sub.chapters.length
+      for (const ch of sub.chapters) {
+        totalFormulas += ch.formulas.length
+        totalExps    += ch.experiments.length
+        totalVideos  += ch.videos.length
+      }
+    }
+  }
+  return { totalChapters, totalFormulas, totalExps, totalVideos, totalClasses: ALL_CLASS_DATA.length }
 }

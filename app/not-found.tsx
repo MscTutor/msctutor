@@ -1,19 +1,20 @@
+'use client'
 import Link from 'next/link'
+import { useTranslations } from '@/lib/use-translations'
 
 export default function NotFound() {
+  const { t } = useTranslations()
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center px-5 text-center">
-      <div className="text-[72px] mb-4">😕</div>
-      <h1 className="font-head text-[32px] font-extrabold text-[#0f1f3d] dark:text-[#e8eeff] mb-2">Page Not Found</h1>
-      <p className="text-[15px] text-[#5a6a8a] mb-7 max-w-[400px]">
-        Ye page nahi mila. Shayad ye link purana hai ya galat type kiya gaya hai.
-      </p>
-      <div className="flex gap-3 flex-wrap justify-center">
-        <Link href="/" className="px-6 py-3 rounded-xl bg-primary-600 text-white font-head font-bold text-[14px] hover:opacity-90 transition">
-          🏠 Home Jaao
+    <div style={{ minHeight:'100vh', background:'#f8f9fc', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'1rem', textAlign:'center', padding:'2rem' }}>
+      <div style={{ fontSize:80 }}>📚</div>
+      <h1 style={{ fontSize:28, fontWeight:900, color:'#111', margin:0 }}>404</h1>
+      <p style={{ fontSize:16, color:'#6b7280', maxWidth:400 }}>{t('errors.notFound')}</p>
+      <div style={{ display:'flex', gap:'0.75rem', flexWrap:'wrap', justifyContent:'center' }}>
+        <Link href="/" style={{ padding:'10px 24px', background:'#1a3a6b', color:'#fff', borderRadius:12, textDecoration:'none', fontWeight:700 }}>
+          🏠 {t('errors.goHome')}
         </Link>
-        <Link href="/ask" className="px-6 py-3 rounded-xl border-2 border-primary-600 text-primary-600 font-head font-bold text-[14px] hover:bg-primary-600 hover:text-white transition">
-          🤖 Question Poochho
+        <Link href="/ask" style={{ padding:'10px 24px', background:'#f3f4f6', color:'#374151', borderRadius:12, textDecoration:'none', fontWeight:700 }}>
+          🤖 {t('nav.askAI')}
         </Link>
       </div>
     </div>

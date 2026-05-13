@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FORMULA_BANK, getFormulaBankStats } from '@/lib/bulk-content-bank'
+import { buildMetadata } from '@/lib/seo/metadata'
+import { JsonLd, breadcrumbSchema } from '@/lib/seo/structured-data'
 
-export const metadata: Metadata = {
-  title: 'Formula Bank - 500+ Formula, Code and Reaction Entries - MscTutor',
-  description: 'Large chapter-wise formula bank for mathematics, science and commerce with generated copyright-safe visuals, explanations and detail pages.',
-}
+export const metadata: Metadata = buildMetadata({ pageKey:'formulas', path:'/formulas' })
+export const revalidate = 86400
 
 const SUBJECT_COLORS = {
   mathematics: { bg: '#e8eef8', color: '#1a3a6b', border: '#c7d5f0' },
@@ -83,6 +83,7 @@ export default function FormulasPage() {
           </section>
         )
       })}
+      <JsonLd data={breadcrumbSchema([{ name:'Home', url:'/' }, { name:'Formula Bank', url:'/formulas' }])} />
     </div>
   )
 }

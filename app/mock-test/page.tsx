@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import toast from 'react-hot-toast'
-import type { Metadata } from 'next'
 
 type View = 'setup' | 'exam' | 'result'
 

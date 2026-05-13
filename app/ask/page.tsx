@@ -1,10 +1,29 @@
 import type { Metadata } from 'next'
 import AskBox from '@/components/ask/AskBox'
+import SampleQuestions from '@/components/ask/SampleQuestions'
+import { buildMetadata } from '@/lib/seo/metadata'
+import { JsonLd, faqSchema, howToSchema } from '@/lib/seo/structured-data'
 
-export const metadata: Metadata = {
-  title: 'Ask Question - AI Tutor - MscTutor',
-  description: 'Ask any Math, Science, Commerce question. Get instant AI step-by-step solution with diagrams and formulas. Free for Class 1-12.',
-}
+export const metadata: Metadata = buildMetadata({
+  pageKey: 'ask',
+  path: '/ask',
+})
+
+const ASK_FAQS = [
+  { question: 'Can I upload a photo of my question?', answer: 'Yes! Click the Image tab, upload a photo of your question and AI solves it instantly.' },
+  { question: 'Does it support voice questions?', answer: 'Yes! Click the Voice tab and speak your question in Hindi or English. AI answers in the same language.' },
+  { question: 'Which subjects are supported?', answer: 'All NCERT subjects: Mathematics, Physics, Chemistry, Biology, English, Hindi, Social Science, Accountancy, Economics and more.' },
+  { question: 'Is it really free?', answer: 'Yes! 5 questions per day are completely free. Premium plans offer unlimited questions.' },
+]
+
+const SAMPLE_QUESTIONS = [
+  'Newton ka pehla niyam kya hai?',
+  'Quadratic equation solve karo: x²-5x+6=0',
+  'Photosynthesis ka process explain karo',
+  'Balance sheet kya hoti hai?',
+  'Demand ka law explain karo',
+  'F=ma ka matlab kya hai?',
+]
 
 export default function AskPage() {
   return (
@@ -25,14 +44,14 @@ export default function AskPage() {
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
-          { icon: 'Write', tip: 'Sawaal clearly likhein', sub: 'e.g. "Newton ka pehla niyam explain karo"' },
-          { icon: 'Image', tip: 'Image se poochho', sub: 'Textbook ka photo leke upload karo' },
-          { icon: 'Voice', tip: 'Voice mein bolein', sub: 'Hindi ya English mein bol sakte hain' },
-        ].map((item) => (
-          <div key={item.tip} className="bg-white dark:bg-[#111827] rounded-[16px] p-4 border border-[#dde5f5] dark:border-[#1e2d4a] text-center">
-            <div className="text-[24px] mb-1.5">{item.icon}</div>
-            <div className="text-[13px] font-bold text-[#0f1f3d] dark:text-[#e8eeff] mb-0.5">{item.tip}</div>
-            <div className="text-[11.5px] text-[#5a6a8a]">{item.sub}</div>
+          { icon: '✏️', tip: 'Sawaal clearly likhein', sub: 'e.g. "Newton ka pehla niyam explain karo"' },
+          { icon: '📷', tip: 'Image se poochho', sub: 'Textbook ka photo leke upload karo' },
+          { icon: '🎤', tip: 'Voice mein bolein', sub: 'Hindi ya English mein bol sakte hain' },
+        ].map((tip) => (
+          <div key={tip.tip} className="bg-white dark:bg-[#111827] rounded-[16px] p-4 border border-[#dde5f5] dark:border-[#1e2d4a] text-center">
+            <div className="text-[24px] mb-1.5">{tip.icon}</div>
+            <div className="text-[13px] font-bold text-[#0f1f3d] dark:text-[#e8eeff] mb-0.5">{tip.tip}</div>
+            <div className="text-[11.5px] text-[#5a6a8a]">{tip.sub}</div>
           </div>
         ))}
       </div>
@@ -41,24 +60,22 @@ export default function AskPage() {
         <h2 className="font-head text-[14px] font-bold text-[#0f1f3d] dark:text-[#e8eeff] mb-3">
           Sample Questions - Try karo:
         </h2>
-        <div className="flex flex-wrap gap-2">
-          {[
-            'Newton ka pehla niyam kya hai?',
-            'Quadratic equation solve karo: x²-5x+6=0',
-            'Photosynthesis ka process explain karo',
-            'Balance sheet kya hoti hai?',
-            'Demand ka law explain karo',
-            'F=ma ka matlab kya hai?',
-          ].map((question) => (
-            <span
-              key={question}
-              className="px-3 py-1.5 rounded-[10px] bg-[#f0f4ff] dark:bg-[#1a2236] border border-[#dde5f5] dark:border-[#1e2d4a] text-[12.5px] text-[#5a6a8a]"
-            >
-              {question}
-            </span>
-          ))}
-        </div>
+        <SampleQuestions questions={SAMPLE_QUESTIONS} />
       </div>
+
+      <JsonLd
+        data={[
+          faqSchema(ASK_FAQS),
+          howToSchema({
+            name: 'How to get AI solution',
+            steps: [
+              { name: 'Type question', text: 'Enter your question in text, or upload image/PDF, or use voice input' },
+              { name: 'Submit', text: 'Click the Solve button or press Enter' },
+              { name: 'Get answer', text: 'AI provides step-by-step solution with formula and NCERT reference' },
+            ],
+          }),
+        ]}
+      />
     </div>
   )
 }

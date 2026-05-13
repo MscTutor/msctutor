@@ -1,90 +1,106 @@
-// app/api/payment/razorpay/route.ts — Razorpay order create + verify
+// app/api/payment/razorpay/route.ts — Razorpay payment (India)
 
-import { NextResponse } from 'next/server'
-import Razorpay         from 'razorpay'
-import crypto           from 'crypto'
-import { prisma }       from '@/lib/prisma'
-import { getAuthUser }  from '@/lib/auth'
-import { PLANS }        from '@/lib/constants'
+import { NextRequest }  from 'next/server'
+import { ok, err, serverErr, requireAuth, parseBody, requireFields } from '@/lib/api-middleware'
+import { logger }       from '@/lib/logger'
 
-export const dynamic = 'force-dynamic'
-
-function getRazorpayClient() {
-  const keyId = process.env.RAZORPAY_KEY_ID
-  const keySecret = process.env.RAZORPAY_KEY_SECRET
-
-  if (!keyId || !keySecret) {
-    return null
-  }
-
-  return new Razorpay({
-    key_id: keyId,
-    key_secret: keySecret,
-  })
+const PLAN_CREDITS: Record<string, { credits: number; amount: number; label: string }> = {
+  starter: { credits: 100,  amount: 4900,  label: 'Starter Plan' },
+  basic:   { credits: 300,  amount: 9900,  label: 'Basic Plan'   },
+  pro:     { credits: 1500, amount: 29900, label: 'Pro Plan'     },
 }
 
-// POST /api/payment/razorpay — create order
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const razorpay = getRazorpayClient()
-    if (!razorpay) {
-      return NextResponse.json({ error: 'Razorpay is not configured yet' }, { status: 503 })
+    const { user, response } = await requireAuth(req)
+    if (response) return response
+
+    const body = await parseBody(req)
+    if (!body) return err('Invalid JSON')
+
+    const missing = requireFields(body, ['plan'])
+    if (missing) return err(missing)
+
+    const plan = PLAN_CREDITS[String(body.plan)]
+    if (!plan) return err('Invalid plan. Choose: starter, basic, or pro')
+
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      // Fallback: return demo order for testing
+      logger.warn('Razorpay not configured — returning demo order')
+      return ok({
+        orderId:  'demo_order_' + Date.now(),
+        amount:   plan.amount,
+        currency: 'INR',
+        keyId:    'demo_key',
+        demo:     true,
+        message:  'Demo mode: Add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to enable real payments',
+      })
     }
 
-    const user = await getAuthUser(req)
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const { plan } = await req.json()
-    const planData = PLANS[plan as keyof typeof PLANS]
-    if (!planData || planData.price === 0) {
-      return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
-    }
-
-    const order = await razorpay.orders.create({
-      amount:   planData.price * 100, // paise
-      currency: 'INR',
-      receipt:  `rcpt_${user.uid}_${Date.now()}`,
-      notes:    { uid: user.uid, plan },
+    const Razorpay = (await import('razorpay')).default
+    const rzp      = new Razorpay({
+      key_id:     process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
     })
 
-    return NextResponse.json({ orderId: order.id, amount: order.amount, currency: order.currency })
-  } catch (err) {
-    console.error('razorpay create error:', err)
-    return NextResponse.json({ error: 'Payment initiation failed' }, { status: 500 })
-  }
+    const order = await rzp.orders.create({
+      amount:   plan.amount,
+      currency: 'INR',
+      notes:    { userId: user!.uid, plan: body.plan as string, credits: String(plan.credits) },
+    })
+
+    logger.info('Razorpay order created', { orderId: order.id, plan: body.plan, userId: user!.uid })
+    return ok({ orderId: order.id, amount: plan.amount, currency: 'INR', keyId: process.env.RAZORPAY_KEY_ID, plan: body.plan, credits: plan.credits, label: plan.label })
+  } catch (e) { return serverErr(e, 'POST /api/payment/razorpay') }
 }
 
-// PUT /api/payment/razorpay — verify payment
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
+  // Payment verification after success
   try {
+    const { user, response } = await requireAuth(req)
+    if (response) return response
+
+    const body = await parseBody(req)
+    if (!body) return err('Invalid JSON')
+
+    const missing = requireFields(body, ['orderId', 'paymentId', 'signature', 'plan'])
+    if (missing) return err(missing)
+
     if (!process.env.RAZORPAY_KEY_SECRET) {
-      return NextResponse.json({ error: 'Razorpay is not configured yet' }, { status: 503 })
+      return err('Payment verification not configured', 500)
     }
 
-    const user = await getAuthUser(req)
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan } = await req.json()
-
-    const body      = razorpay_order_id + '|' + razorpay_payment_id
-    const expected  = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET ?? '')
-      .update(body)
+    // Verify signature
+    const crypto     = await import('crypto')
+    const expected   = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(`${body.orderId}|${body.paymentId}`)
       .digest('hex')
 
-    if (expected !== razorpay_signature) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
+    if (expected !== body.signature) {
+      logger.warn('Invalid Razorpay signature', { userId: user!.uid })
+      return err('Payment verification failed. Signature mismatch.', 400)
     }
 
-    const planData = PLANS[plan as keyof typeof PLANS]
-    await prisma.user.update({
-      where: { firebaseUid: user.uid },
-      data:  { plan, credits: { increment: planData.credits } },
+    const plan = PLAN_CREDITS[String(body.plan)]
+    if (!plan) return err('Invalid plan')
+
+    // Add credits to user
+    await dbSafe(async () => {
+      const { default: prisma } = await import('@/lib/prisma')
+      return prisma.user.update({
+        where: { firebaseUid: user!.uid },
+        data:  {
+          credits:  { increment: plan.credits },
+          plan:     String(body.plan),
+        },
+      })
     })
 
-    return NextResponse.json({ success: true, plan, credits: planData.credits })
-  } catch (err) {
-    console.error('razorpay verify error:', err)
-    return NextResponse.json({ error: 'Payment verification failed' }, { status: 500 })
-  }
+    logger.info('Payment verified and credits added', { userId: user!.uid, plan: body.plan, credits: plan.credits })
+    return ok({ success: true, credits: plan.credits, plan: body.plan, message: `${plan.credits} credits added!` })
+  } catch (e) { return serverErr(e, 'PUT /api/payment/razorpay') }
+}
+
+async function dbSafe<T>(op: () => Promise<T>): Promise<T | null> {
+  try { return await op() } catch { return null }
 }
