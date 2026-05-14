@@ -1,5 +1,8 @@
 import { ALL_CLASS_DATA } from '@/lib/ncert-master'
 import { ALL_CLASS_DATA_1_5 } from '@/lib/ncert-master-1-5'
+import { ALL_CLASS6_EXTRA_DATA } from '@/lib/ncert-master-6-extra'
+import { ALL_CLASS7_EXTRA_DATA } from '@/lib/ncert-master-7-extra'
+import { ALL_CLASS8_EXTRA_DATA } from '@/lib/ncert-master-8-extra'
 import { ALL_CLASSES } from '@/lib/ncert-syllabus'
 import { CLASS_11_COMMERCE, CLASS_12_COMMERCE, CLASS_11_HUMANITIES, CLASS_12_HUMANITIES } from '@/lib/ncert-syllabus-commerce'
 import { CLASS10_MATHEMATICS_TEXTBOOK } from '@/lib/class10-maths-textbook'
@@ -259,6 +262,20 @@ function buildRichMap() {
           `${classData.classLevel}:${subject.slug}:${chapter.id}`,
           normalizeRichChapter(classData.classLevel, subject.slug, subject.name, chapter),
         )
+      }
+    }
+  }
+
+  // Class 6-8 extra rich content
+  const extraSources = [...ALL_CLASS6_EXTRA_DATA, ...ALL_CLASS7_EXTRA_DATA, ...ALL_CLASS8_EXTRA_DATA]
+  for (const classData of extraSources) {
+    for (const subject of classData.subjects) {
+      for (const chapter of subject.chapters) {
+        // only add if not already present (don't override existing rich content)
+        const key = `${classData.classLevel}:${subject.slug}:${chapter.id}`
+        if (!map.has(key)) {
+          map.set(key, normalizeRichChapter(classData.classLevel, subject.slug, subject.name, chapter))
+        }
       }
     }
   }

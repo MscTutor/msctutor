@@ -11,16 +11,21 @@ import { JsonLd, homePageSchemas } from '@/lib/seo/structured-data'
 export const metadata: Metadata = buildMetadata({ pageKey:'home', path:'/' })
 
 const ROLE_CARDS = [
-  { icon: '👨‍🎓', title: 'Student', desc: 'Ask doubts, read chapters, take mock tests and learn with AI.', href: '/dashboard' },
-  { icon: '🏫', title: 'School', desc: 'Manage classes, attendance, notices and academic workflows.', href: '/school-dashboard' },
-  { icon: '👨‍🏫', title: 'Teacher', desc: 'Open teaching tools, live class flow and chapter support.', href: '/teacher/dashboard' },
+  { icon: '👨‍🎓', title: 'Student',     desc: 'Ask doubts, read chapters, take mock tests and learn with AI.',      href: '/dashboard'       },
+  { icon: '👨‍👩‍👧', title: 'Parent',      desc: 'Track your child\'s attendance, grades, homework and teacher messages.', href: '/parent'           },
+  { icon: '🏫', title: 'School',      desc: 'Manage classes, attendance, notices and academic workflows.',          href: '/school-dashboard' },
+  { icon: '👨‍🏫', title: 'Teacher',     desc: 'Open teaching tools, live class flow and chapter support.',           href: '/teacher/dashboard' },
+  { icon: '🏆', title: 'Competitive', desc: 'NTSE, Olympiads, JEE, NEET, UPSC, NDA — complete exam prep hub.',      href: '/competitive'      },
 ]
 
 const QUICK_LINKS = [
-  { label: 'Explore Classes', href: '/class' },
-  { label: 'Explore Subjects', href: '/subject' },
-  { label: 'Formula Bank', href: '/formulas' },
-  { label: 'Demo Page', href: '/demo' },
+  { label: 'Explore Classes',   href: '/class'       },
+  { label: 'Explore Subjects',  href: '/subject'     },
+  { label: 'Formula Bank',      href: '/formulas'    },
+  { label: 'Competitive Exams', href: '/competitive' },
+  { label: 'Parent Portal',     href: '/parent'      },
+  { label: 'Live Classes',      href: '/live'        },
+  { label: 'AI Teacher',        href: '/ai-teacher'  },
 ]
 
 export default function HomePage() {

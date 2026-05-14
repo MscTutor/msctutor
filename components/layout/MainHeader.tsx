@@ -1,10 +1,19 @@
 'use client'
-// components/layout/MainHeader.tsx — With Language Switcher + AI Teacher
+// components/layout/MainHeader.tsx — With Language Switcher + AI Teacher + Notification Bell
 
 import Link                from 'next/link'
 import { useRouter }       from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 import LanguageSwitcher    from './LanguageSwitcher'
+
+// ── Notification data ────────────────────────────────────────────────────
+const HEADER_NOTIFS = [
+  { id:1, icon:'📢', text:'Parent-Teacher meeting on 24 May at 10 AM', time:'1h ago',  unread:true  },
+  { id:2, icon:'🏆', text:'New badge earned: "7-Day Streak Champion"',  time:'3h ago',  unread:true  },
+  { id:3, icon:'📝', text:'New mock test available — Class 10 Science',  time:'5h ago',  unread:true  },
+  { id:4, icon:'🎉', text:'Your class rank improved to #4 this week',    time:'1d ago',  unread:false },
+  { id:5, icon:'📅', text:'Live class scheduled: Math Revision — 7 PM',  time:'2d ago',  unread:false },
+]
 
 declare global {
   interface Window { SpeechRecognition: any; webkitSpeechRecognition: any }
@@ -23,8 +32,11 @@ export default function MainHeader() {
   const [query,     setQuery]     = useState('')
   const [listening, setListening] = useState(false)
   const [showSug,   setShowSug]   = useState(false)
+  const [showNotif, setShowNotif] = useState(false)
+  const [notifs,    setNotifs]    = useState(HEADER_NOTIFS)
   const recogRef = useRef<any>(null)
-  const filtered = SUGGESTIONS.filter(s => query && s.toLowerCase().includes(query.toLowerCase()))
+  const filtered   = SUGGESTIONS.filter(s => query && s.toLowerCase().includes(query.toLowerCase()))
+  const unreadCount = notifs.filter(n => n.unread).length
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
@@ -48,10 +60,17 @@ export default function MainHeader() {
   }
 
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (!(e.target as Element).closest('.srch-wrap')) setShowSug(false) }
+    const h = (e: MouseEvent) => {
+      if (!(e.target as Element).closest('.srch-wrap'))  setShowSug(false)
+      if (!(e.target as Element).closest('.notif-bell')) setShowNotif(false)
+    }
     document.addEventListener('click', h)
     return () => document.removeEventListener('click', h)
   }, [])
+
+  function markAllRead() {
+    setNotifs(prev => prev.map(n => ({ ...n, unread: false })))
+  }
 
   return (
     <header style={{ background:'#fff', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', padding:'0 16px', height:58, gap:10, boxShadow:'0 2px 10px rgba(26,58,107,.07)', position:'sticky', top:0, zIndex:100 }}>
@@ -105,6 +124,48 @@ export default function MainHeader() {
 
         {/* Language Switcher */}
         <LanguageSwitcher variant="compact" />
+
+        {/* Notification Bell */}
+        <div className="notif-bell" style={{ position:'relative' }}>
+          <button onClick={() => setShowNotif(v => !v)}
+            style={{ position:'relative', width:36, height:36, borderRadius:9, border:'1.5px solid #e5e7eb', background:'#f8faff', color:'#1a3a6b', cursor:'pointer', fontSize:17, display:'flex', alignItems:'center', justifyContent:'center', transition:'background .15s' }}>
+            🔔
+            {unreadCount > 0 && (
+              <span style={{ position:'absolute', top:-5, right:-5, background:'#ef4444', color:'#fff', borderRadius:'50%', width:17, height:17, fontSize:9, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid #fff', lineHeight:1 }}>
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          {showNotif && (
+            <div style={{ position:'absolute', top:'calc(100% + 8px)', right:0, width:310, background:'#fff', borderRadius:14, boxShadow:'0 12px 40px rgba(0,0,0,.15)', border:'1px solid #e5e7eb', zIndex:300, overflow:'hidden' }}>
+              <div style={{ padding:'11px 14px', borderBottom:'1px solid #f3f4f6', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <span style={{ fontWeight:800, color:'#1a3a6b', fontSize:13 }}>🔔 Notifications</span>
+                {unreadCount > 0 && (
+                  <button onClick={markAllRead} style={{ fontSize:10, color:'#3b82f6', fontWeight:700, background:'none', border:'none', cursor:'pointer' }}>Mark all read</button>
+                )}
+              </div>
+              {notifs.map(n => (
+                <div key={n.id}
+                  style={{ padding:'10px 14px', borderBottom:'1px solid #f9fafb', background: n.unread ? '#eff6ff' : '#fff', display:'flex', gap:9, alignItems:'flex-start', cursor:'pointer' }}
+                  onClick={() => setNotifs(prev => prev.map(x => x.id === n.id ? {...x, unread:false} : x))}>
+                  <span style={{ fontSize:16, flexShrink:0, marginTop:1 }}>{n.icon}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:11, color:'#374151', lineHeight:1.4, fontWeight: n.unread ? 700 : 400 }}>{n.text}</div>
+                    <div style={{ fontSize:10, color:'#9ca3af', marginTop:2 }}>{n.time}</div>
+                  </div>
+                  {n.unread && <div style={{ width:7, height:7, borderRadius:'50%', background:'#3b82f6', flexShrink:0, marginTop:5 }} />}
+                </div>
+              ))}
+              <div style={{ padding:'9px 14px', borderTop:'1px solid #f3f4f6', display:'flex', gap:10 }}>
+                <Link href="/parent" onClick={() => setShowNotif(false)}
+                  style={{ fontSize:11, color:'#1a3a6b', fontWeight:700, textDecoration:'none' }}>Parent Portal →</Link>
+                <Link href="/dashboard" onClick={() => setShowNotif(false)}
+                  style={{ fontSize:11, color:'#6b7280', fontWeight:700, textDecoration:'none' }}>My Dashboard →</Link>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Ask AI */}
         <Link href="/ask"
