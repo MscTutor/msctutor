@@ -2,6 +2,7 @@
 // app/learn/[classId]/[subject]/[chapterId]/page.tsx
 // PREMIUM INTERACTIVE CHAPTER PAGE — Industry EdTech Level
 
+import React from 'react'
 import {
   useState, useEffect, useCallback, useRef, useMemo,
   type FormEvent,
@@ -20,12 +21,13 @@ import {
 import { DynamicKatex } from '@/components/LazyComponents'
 
 // ─── FORMULA DISPLAY ─────────────────────────────────────────────
+const KatexMath = DynamicKatex as React.ComponentType<{math: string}>
 function FormulaDisplay({ formula }: { formula: string }) {
   const isLatex = /[\\^_{}]|\\frac|\\sqrt|\\sum|\\int/.test(formula)
   if (!isLatex) {
     return <span style={{fontFamily:'monospace',fontSize:15,fontWeight:700,color:'#1e1b4b'}}>{formula}</span>
   }
-  return <DynamicKatex math={formula} />
+  return <KatexMath math={formula} />
 }
 
 // ─── TYPES ───────────────────────────────────────────────────────
