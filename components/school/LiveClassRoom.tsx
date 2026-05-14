@@ -4,7 +4,14 @@
 import { useEffect, useRef, useState } from 'react'
 
 declare global {
-  interface Window { JitsiMeetExternalAPI: new (d: string, o: Record<string, unknown>) => { dispose: () => void } }
+  interface Window {
+    JitsiMeetExternalAPI: new (d: string, o: Record<string, unknown>) => {
+      dispose: () => void
+      executeCommand?: (cmd: string, ...args: unknown[]) => void
+      getNumberOfParticipants?: () => number
+      addListener?: (event: string, fn: (...a: unknown[]) => void) => void
+    }
+  }
 }
 
 interface Props { roomName: string; userName: string; isTeacher?: boolean; onEnd?: () => void }
