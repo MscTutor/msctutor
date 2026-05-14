@@ -20,14 +20,16 @@ const ROLE_CARDS = [
 ]
 
 const QUICK_LINKS = [
-  { label: 'Explore Classes',   href: '/class'       },
-  { label: 'Explore Subjects',  href: '/subject'     },
-  { label: 'Formula Bank',      href: '/formulas'    },
-  { label: 'Competitive Exams', href: '/competitive' },
-  { label: 'Parent Portal',     href: '/parent'      },
-  { label: 'Live Classes',  href: '/live'       },
-  { label: 'Analytics',    href: '/analytics'  },
-  { label: 'AI Teacher',   href: '/ai-teacher' },
+  { label: '🧮 Calculators',    href: '/calculators' },
+  { label: '📋 Formula Bank',   href: '/formulas'    },
+  { label: '📚 Explore Classes', href: '/class'      },
+  { label: '⚗️ Subjects',        href: '/subject'    },
+  { label: '🏆 Competitive',    href: '/competitive' },
+  { label: '👨‍👩‍👧 Parent Portal',   href: '/parent'     },
+  { label: '🎥 Live Classes',   href: '/live'        },
+  { label: '📊 Analytics',      href: '/analytics'   },
+  { label: '👩‍🏫 AI Teacher',     href: '/ai-teacher'  },
+  { label: '📝 Mock Tests',     href: '/mock-test'   },
 ]
 
 export default function HomePage() {
@@ -86,12 +88,28 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Calculator strip ── */}
+      <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 1rem 1rem' }}>
+        <Link href="/calculators" style={{ textDecoration: 'none', display: 'block' }}>
+          <div style={{ background: 'linear-gradient(135deg,#0a5e3f,#064e34)', color: '#fff', borderRadius: 20, padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: 18, cursor: 'pointer' }}>
+            <span style={{ fontSize: 48 }}>🧮</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>Free Math &amp; Science Calculators</div>
+              <div style={{ fontSize: 13, opacity: 0.85 }}>Percentage · Interest · Geometry · Statistics · Fractions · Quadratic · Mole · Matrix · Scientific</div>
+            </div>
+            <div style={{ background: '#ffffff22', border: '1px solid #ffffff44', borderRadius: 12, padding: '8px 18px', fontWeight: 800, fontSize: 14, whiteSpace: 'nowrap' }}>
+              Open Calculators →
+            </div>
+          </div>
+        </Link>
+      </section>
+
       <section style={{ maxWidth: 1100, margin: '0 auto', padding: '1rem 1rem 3rem' }}>
         <div style={{ background: 'linear-gradient(135deg,#102a56,#254f97)', color: '#fff', borderRadius: 24, padding: '1.5rem' }}>
           <h2 style={{ fontSize: 24, fontWeight: 900, marginTop: 0, marginBottom: 10 }}>Quick access</h2>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {QUICK_LINKS.map((item) => (
-              <Link key={item.href} href={item.href} style={{ background: '#ffffff18', color: '#fff', textDecoration: 'none', padding: '10px 16px', borderRadius: 12, fontWeight: 800, border: '1px solid #ffffff26' }}>
+              <Link key={item.href} href={item.href} style={{ background: '#ffffff18', color: '#fff', textDecoration: 'none', padding: '10px 16px', borderRadius: 12, fontWeight: 800, border: '1px solid #ffffff26', fontSize: 13 }}>
                 {item.label}
               </Link>
             ))}

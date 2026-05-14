@@ -44,8 +44,11 @@ export function useTranslations() {
   const [loaded,   setLoaded]   = useState(false)
 
   useEffect(() => {
-    const saved = getCookie('msc_locale') as SupportedLocale
-    const loc   = VALID_LOCALES.includes(saved) ? saved : 'en'
+    // Read from localStorage first (written by language-context), then cookie, then default 'en'
+    const ls  = (typeof window !== 'undefined' ? localStorage.getItem('msc_locale') : null) as SupportedLocale | null
+    const ck  = getCookie('msc_locale') as SupportedLocale
+    const saved = (ls && VALID_LOCALES.includes(ls) ? ls : null) ?? (VALID_LOCALES.includes(ck) ? ck : null)
+    const loc   = saved ?? 'en'
     setLocale(loc)
     load(loc).then(d => { setMessages(d); setLoaded(true) })
   }, [])

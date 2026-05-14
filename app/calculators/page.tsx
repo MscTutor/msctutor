@@ -2,15 +2,15 @@
 import { useState } from 'react'
 
 const CALCS = [
-  { id: 'percent', icon: '%', name: 'Percentage', desc: 'X% of Y, % change, reverse %' },
+  { id: 'percent', icon: '🧮', name: 'Percentage', desc: 'X% of Y, % change, reverse %' },
   { id: 'interest', icon: '🏦', name: 'Interest', desc: 'Simple & Compound Interest + GST' },
   { id: 'geometry', icon: '📐', name: 'Geometry', desc: 'Area, Perimeter, Volume' },
   { id: 'stats', icon: '📊', name: 'Statistics', desc: 'Mean, Median, Mode, SD' },
   { id: 'unit', icon: '📏', name: 'Unit Converter', desc: 'Length, Weight, Temperature, Area' },
-  { id: 'fraction', icon: '½', name: 'Fraction', desc: 'Add, Subtract, Multiply, Simplify' },
+  { id: 'fraction', icon: '➗', name: 'Fraction', desc: 'Add, Subtract, Multiply, Simplify' },
   { id: 'quadratic', icon: '📈', name: 'Quadratic', desc: 'Roots of ax²+bx+c=0' },
   { id: 'chem', icon: '⚗️', name: 'Mole Calculator', desc: 'Moles, Molar Mass, Molarity' },
-  { id: 'matrix', icon: '🔲', name: 'Matrix', desc: '2×2 / 3×3 operations, determinant' },
+  { id: 'matrix', icon: '🔢', name: 'Matrix', desc: '2×2 / 3×3 operations, determinant' },
   { id: 'scientific', icon: '🔬', name: 'Scientific', desc: 'Powers, roots, trigonometry' },
 ]
 

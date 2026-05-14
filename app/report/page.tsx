@@ -92,9 +92,54 @@ export default function ReportPage() {
 
       <style>{`
         @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; }
-          .report-card { box-shadow: none !important; margin: 0 !important; border-radius: 0 !important; }
+          /* ── Page setup ── */
+          @page {
+            size: A4 portrait;
+            margin: 12mm 14mm 12mm 14mm;
+          }
+
+          /* ── Hide non-report elements ── */
+          .no-print          { display: none !important; }
+          header, nav, footer,
+          [data-nav], [data-topbar] { display: none !important; }
+
+          /* ── Body reset ── */
+          html, body {
+            background: #fff !important;
+            color: #000 !important;
+            font-size: 11pt !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+
+          /* ── Card reset ── */
+          .report-card {
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+            border: none !important;
+            page-break-inside: avoid;
+          }
+
+          /* ── Table rules ── */
+          table { page-break-inside: auto !important; }
+          tr    { page-break-inside: avoid !important; page-break-after: auto !important; }
+          thead { display: table-header-group !important; }
+          tfoot { display: table-footer-group !important; }
+
+          /* ── Section break hints ── */
+          .report-section { page-break-inside: avoid !important; }
+
+          /* ── Keep gradients & colors in print ── */
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+          /* ── Shrink font sizes slightly for fit ── */
+          td, th     { font-size: 9pt !important; padding: 6px 8px !important; }
+          h1         { font-size: 16pt !important; }
+          h3, h4     { font-size: 11pt !important; }
+          .stat-value { font-size: 14pt !important; }
         }
       `}</style>
 

@@ -35,7 +35,15 @@ export default function SubjectNav() {
   const isActive = (href: string) => path === href || path.startsWith(href + '/')
 
   useEffect(() => {
-    const saved = localStorage.getItem('msc_locale') || 'en'
+    // Read locale from localStorage (synced from language-context on every switch)
+    const getLocale = () => {
+      const ls = localStorage.getItem('msc_locale')
+      if (ls) return ls
+      // Fallback: read from cookie
+      const m = document.cookie.match(/(?:^|; )msc_locale=([^;]*)/)
+      return m ? decodeURIComponent(m[1]) : 'en'
+    }
+    const saved = getLocale()
     setLocale(saved)
     loadMessages(saved as any).then(setMessages)
   }, [])

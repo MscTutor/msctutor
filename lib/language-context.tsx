@@ -11,8 +11,18 @@ export function LanguageProvider({ children, initialLocale }: { children: ReactN
   const [locale, setLocaleState] = useState<Locale>(initialLocale ?? DEFAULT_LOCALE)
 
   useEffect(() => {
-    const saved = getCookie('msc_locale') as Locale
-    if (saved && SUPPORTED_LOCALES.includes(saved)) { setLocaleState(saved); return }
+    // Read from BOTH storages — localStorage takes precedence (used by SubjectNav/voice)
+    const ls   = (typeof window !== 'undefined' ? localStorage.getItem('msc_locale') : null) as Locale | null
+    const ck   = getCookie('msc_locale') as Locale
+    const best = (ls && SUPPORTED_LOCALES.includes(ls) ? ls : null)
+              ?? (ck && SUPPORTED_LOCALES.includes(ck)  ? ck : null)
+    if (best) {
+      setLocaleState(best)
+      // Sync both storages so every reader finds the same value
+      setCookie('msc_locale', best, 365)
+      if (typeof window !== 'undefined') localStorage.setItem('msc_locale', best)
+      return
+    }
     const browser = navigator.language.slice(0,2) as Locale
     if (SUPPORTED_LOCALES.includes(browser)) setLocaleState(browser)
   }, [])
@@ -36,8 +46,10 @@ export function LanguageProvider({ children, initialLocale }: { children: ReactN
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l)
-    setCookie('msc_locale', l, 30)
-    window.location.reload()  // Reload to apply server-side translations
+    // Write to BOTH cookie and localStorage so every reader (SubjectNav, voice mic, Jarvis) gets it
+    setCookie('msc_locale', l, 365)
+    if (typeof window !== 'undefined') localStorage.setItem('msc_locale', l)
+    window.location.reload()  // Reload to apply new locale across all components
   }, [])
 
   const isRTL = RTL_LOCALES.includes(locale)

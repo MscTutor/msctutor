@@ -1,5 +1,6 @@
 import { ALL_CLASS_DATA } from '@/lib/ncert-master'
 import { ALL_CLASS_DATA_1_5 } from '@/lib/ncert-master-1-5'
+import { ALL_CLASS_DATA_1_5_EXTRA } from '@/lib/ncert-master-1-5-extra'
 import { ALL_CLASS6_EXTRA_DATA } from '@/lib/ncert-master-6-extra'
 import { ALL_CLASS7_EXTRA_DATA } from '@/lib/ncert-master-7-extra'
 import { ALL_CLASS8_EXTRA_DATA } from '@/lib/ncert-master-8-extra'
@@ -266,6 +267,18 @@ function buildRichMap() {
     }
   }
 
+  // Class 1-5 extra rich content (additional chapters)
+  for (const classData of ALL_CLASS_DATA_1_5_EXTRA) {
+    for (const subject of classData.subjects) {
+      for (const chapter of subject.chapters) {
+        const key = `${classData.classLevel}:${subject.slug}:${chapter.id}`
+        if (!map.has(key)) {
+          map.set(key, normalizeRichChapter(classData.classLevel, subject.slug, subject.name, chapter))
+        }
+      }
+    }
+  }
+
   // Class 6-8 extra rich content
   const extraSources = [...ALL_CLASS6_EXTRA_DATA, ...ALL_CLASS7_EXTRA_DATA, ...ALL_CLASS8_EXTRA_DATA]
   for (const classData of extraSources) {
@@ -362,6 +375,14 @@ function getRawClassSources(classLevel: string) {
     const masterData = ALL_CLASS_DATA.find((d) => String(d.classLevel) === classLevel)
     if (masterData) extra.push(masterData)
 
+    // Check Class 1-5 data
+    const class1_5Data = ALL_CLASS_DATA_1_5.find((d) => String(d.classLevel) === classLevel)
+    if (class1_5Data) extra.push(class1_5Data)
+    for (const d of ALL_CLASS_DATA_1_5_EXTRA) {
+      if (String(d.classLevel) === classLevel) extra.push(d)
+    }
+
+    // Check Class 6-8 extra data
     const allExtraData = [...ALL_CLASS6_EXTRA_DATA, ...ALL_CLASS7_EXTRA_DATA, ...ALL_CLASS8_EXTRA_DATA]
     for (const d of allExtraData) {
       if (String(d.classLevel) === classLevel) extra.push(d)
