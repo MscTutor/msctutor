@@ -354,6 +354,20 @@ function getRawClassSources(classLevel: string) {
     extra.push(CLASS_12_COMMERCE, CLASS_12_HUMANITIES)
   }
 
+  // ── For classes with no syllabus base (Class 7 & 8), synthesise from rich sources ──
+  // ncert-syllabus.ts only covers 1,2,3,4,5,6,9,10,11,12 — NOT 7 or 8.
+  // We pull chapters from ALL_CLASS_DATA (ncert-master) + extra files so that
+  // /class/7, /class/8 and all their subject/chapter pages work correctly.
+  if (!base && extra.length === 0) {
+    const masterData = ALL_CLASS_DATA.find((d) => String(d.classLevel) === classLevel)
+    if (masterData) extra.push(masterData)
+
+    const allExtraData = [...ALL_CLASS6_EXTRA_DATA, ...ALL_CLASS7_EXTRA_DATA, ...ALL_CLASS8_EXTRA_DATA]
+    for (const d of allExtraData) {
+      if (String(d.classLevel) === classLevel) extra.push(d)
+    }
+  }
+
   return { base, extra }
 }
 

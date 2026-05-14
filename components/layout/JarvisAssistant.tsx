@@ -54,21 +54,36 @@ export default function JarvisAssistant() {
   // Handle navigation commands
   const handleCommand = useCallback((text: string) => {
     const t = text.toLowerCase()
-    if (t.includes('open') || t.includes('go to') || t.includes('show')) {
-      if (t.includes('home'))           { router.push('/');            return '🏠 Home page khol raha hoon!' }
-      if (t.includes('mock test') || t.includes('test')) { router.push('/mock-test'); return '📋 Mock Test khol raha hoon!' }
-      if (t.includes('formula'))        { router.push('/formulas');    return '📐 Formula bank khol raha hoon!' }
-      if (t.includes('calculator'))     { router.push('/calculators'); return '🔢 Calculator khol raha hoon!' }
-      if (t.includes('community'))      { router.push('/community');   return '💬 Community khol raha hoon!' }
-      if (t.includes('class 10'))       { router.push('/class/10');    return '📚 Class 10 page khol raha hoon!' }
-      if (t.includes('class 9'))        { router.push('/class/9');     return '📚 Class 9 page khol raha hoon!' }
-      if (t.includes('class 12'))       { router.push('/class/12');    return '📚 Class 12 page khol raha hoon!' }
-      if (t.includes('physics'))        { router.push('/class/11/physics'); return '🔬 Physics khol raha hoon!' }
-      if (t.includes('chemistry'))      { router.push('/class/11/chemistry'); return '🧪 Chemistry khol raha hoon!' }
-      if (t.includes('math'))           { router.push('/class/10/mathematics'); return '➕ Mathematics khol raha hoon!' }
+    if (t.includes('open') || t.includes('go to') || t.includes('show') || t.includes('kholo') || t.includes('dikhao')) {
+      if (t.includes('home') || t.includes('ghar'))        { router.push('/');               return '🏠 Home page khol raha hoon!' }
+      if (t.includes('mock test') || t.includes('test'))   { router.push('/mock-test');       return '📋 Mock Test khol raha hoon!' }
+      if (t.includes('formula'))                            { router.push('/formulas');        return '📐 Formula bank khol raha hoon!' }
+      if (t.includes('calculator'))                         { router.push('/calculators');     return '🔢 Calculator khol raha hoon!' }
+      if (t.includes('community'))                          { router.push('/community');       return '💬 Community khol raha hoon!' }
+      if (t.includes('live'))                               { router.push('/live');            return '🎥 Live Classes khol raha hoon!' }
+      if (t.includes('parent'))                             { router.push('/parent');          return '👨‍👩‍👧 Parent Dashboard khol raha hoon!' }
+      if (t.includes('analytic') || t.includes('progress')) { router.push('/analytics');      return '📊 Analytics khol raha hoon!' }
+      if (t.includes('competitive') || t.includes('ntse') || t.includes('olympiad')) { router.push('/competitive'); return '🏆 Competitive Exams khol raha hoon!' }
+      if (t.includes('jee') || t.includes('neet'))         { router.push('/jee-neet');        return '🏆 JEE/NEET page khol raha hoon!' }
+      if (t.includes('report') || t.includes('card'))      { router.push('/report');          return '📋 Report Card khol raha hoon!' }
+      if (t.includes('dashboard'))                          { router.push('/dashboard');       return '📊 Dashboard khol raha hoon!' }
+      if (t.includes('class 12'))  { router.push('/class/12');              return '📚 Class 12 page khol raha hoon!' }
+      if (t.includes('class 11'))  { router.push('/class/11');              return '📚 Class 11 page khol raha hoon!' }
+      if (t.includes('class 10'))  { router.push('/class/10');              return '📚 Class 10 page khol raha hoon!' }
+      if (t.includes('class 9'))   { router.push('/class/9');               return '📚 Class 9 page khol raha hoon!' }
+      if (t.includes('class 8'))   { router.push('/class/8');               return '📚 Class 8 page khol raha hoon!' }
+      if (t.includes('class 7'))   { router.push('/class/7');               return '📚 Class 7 page khol raha hoon!' }
+      if (t.includes('class 6'))   { router.push('/class/6');               return '📚 Class 6 page khol raha hoon!' }
+      if (t.includes('physics'))   { router.push('/class/11/physics');      return '🔬 Physics khol raha hoon!' }
+      if (t.includes('chemistry')) { router.push('/class/11/chemistry');    return '🧪 Chemistry khol raha hoon!' }
+      if (t.includes('biology'))   { router.push('/class/11/biology');      return '🧬 Biology khol raha hoon!' }
+      if (t.includes('math'))      { router.push('/class/10/mathematics');  return '➕ Mathematics khol raha hoon!' }
+      if (t.includes('hindi'))     { router.push('/class/10/hindi');        return '🇮🇳 Hindi khol raha hoon!' }
+      if (t.includes('english'))   { router.push('/class/10/english');      return '📖 English khol raha hoon!' }
+      if (t.includes('science'))   { router.push('/class/10/science');      return '⚗️ Science khol raha hoon!' }
     }
-    if (t.includes('search')) {
-      const query = t.replace(/search|for|about/gi, '').trim()
+    if (t.includes('search') || t.includes('khojo') || t.includes('dhundo')) {
+      const query = t.replace(/search|for|about|khojo|dhundo/gi, '').trim()
       if (query) { router.push(`/search?q=${encodeURIComponent(query)}`); return `🔍 "${query}" search kar raha hoon!` }
     }
     return null
@@ -113,17 +128,35 @@ export default function JarvisAssistant() {
       webkitSpeechRecognition?: BrowserSpeechRecognitionCtor
     }
     const SR = browserWindow.SpeechRecognition || browserWindow.webkitSpeechRecognition
-    if (!SR) { alert('Aapka browser voice recognition support nahi karta. Chrome use karein!'); return }
+    if (!SR) {
+      setMessages(m => [...m, { role: 'ai', text: '⚠️ Aapka browser voice recognition support nahi karta. Chrome ya Edge use karein!', time: now() }])
+      setMode('chat')
+      return
+    }
+
+    // Auto-detect language from stored locale
+    const localeMap: Record<string, string> = {
+      hi: 'hi-IN', en: 'en-IN', bn: 'bn-IN', gu: 'gu-IN',
+      mr: 'mr-IN', ta: 'ta-IN', te: 'te-IN', pa: 'pa-IN', ur: 'ur-PK',
+    }
+    const locale = (typeof window !== 'undefined' ? localStorage.getItem('msc_locale') : null) ?? 'hi'
+    const lang = localeMap[locale] ?? 'hi-IN'
 
     const recog = new SR()
-    recog.lang           = 'hi-IN'
+    recog.lang           = lang
     recog.interimResults = true
     recog.continuous     = false
     recogRef.current     = recog
 
     recog.onstart  = () => { setListening(true); setPulse(true) }
     recog.onend    = () => { setListening(false); setPulse(false) }
-    recog.onerror  = () => { setListening(false); setPulse(false) }
+    recog.onerror  = () => {
+      setListening(false)
+      setPulse(false)
+      setTranscript('')
+      setMessages(m => [...m, { role: 'ai', text: '🎤 Voice input nahi sun paya. Mic ki permission check karein aur dobara try karein.', time: now() }])
+      setMode('chat')
+    }
     recog.onresult = (e: BrowserSpeechRecognitionEvent) => {
       const t = Array.from(e.results).map(r => r[0].transcript).join('')
       setTranscript(t)
@@ -250,10 +283,20 @@ export default function JarvisAssistant() {
 
               {/* Quick commands */}
               <div style={{ padding: '6px 12px', display: 'flex', gap: 6, flexWrap: 'wrap', borderTop: '1px solid #f3f4f6' }}>
-                {['📋 Mock Test', '📐 Formulas', '🔬 Physics', '➕ Maths'].map(cmd => (
-                  <button key={cmd} onClick={() => { setInput(cmd.slice(2)); send() }}
+                {[
+                  { label: '📋 Mock Test', cmd: 'open mock test' },
+                  { label: '📐 Formulas',  cmd: 'open formula bank' },
+                  { label: '🔬 Physics',   cmd: 'open class 11 physics' },
+                  { label: '➕ Maths',     cmd: 'open class 10 mathematics' },
+                  { label: '🏆 JEE/NEET', cmd: 'open jee neet' },
+                  { label: '🎥 Live',      cmd: 'open live classes' },
+                ].map(({ label, cmd }) => (
+                  <button key={label} onClick={() => {
+                    setMessages(m => [...m, { role: 'user', text: cmd, time: now() }])
+                    askAI(cmd)
+                  }}
                     style={{ fontSize: 11, padding: '3px 8px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 20, cursor: 'pointer', color: '#374151' }}>
-                    {cmd}
+                    {label}
                   </button>
                 ))}
               </div>

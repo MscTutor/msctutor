@@ -45,11 +45,25 @@ export default function MainHeader() {
 
   function startVoice() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
-    if (!SR) return
-    const r = new SR(); r.lang = 'hi-IN'; r.interimResults = true; r.continuous = false
+    if (!SR) {
+      setQuery('⚠️ Mic not supported — use Chrome')
+      setTimeout(() => setQuery(''), 3000)
+      return
+    }
+    // Auto-detect language from stored locale
+    const localeMap: Record<string, string> = {
+      hi:'hi-IN', en:'en-IN', bn:'bn-IN', gu:'gu-IN',
+      mr:'mr-IN', ta:'ta-IN', te:'te-IN', pa:'pa-IN', ur:'ur-PK',
+    }
+    const locale = (typeof window !== 'undefined' ? localStorage.getItem('msc_locale') : null) ?? 'hi'
+    const r = new SR()
+    r.lang = localeMap[locale] ?? 'hi-IN'
+    r.interimResults = true
+    r.continuous = false
     recogRef.current = r
     r.onstart  = () => setListening(true)
     r.onend    = () => setListening(false)
+    r.onerror  = () => { setListening(false); setQuery(''); }
     r.onresult = (e: any) => {
       const t = Array.from(e.results as SpeechRecognitionResultList).map((r: any) => r[0].transcript).join('')
       setQuery(t)

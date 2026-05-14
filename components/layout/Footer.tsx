@@ -44,10 +44,11 @@ export default function Footer() {
           {/* Classes */}
           <div>
             <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/40 mb-3">Classes</h4>
-            {['9','10','11','12'].map(c => (
+            {['6','7','8','9','10','11','12'].map(c => (
               <FooterLink key={c} href={`/class/${c}`}>Class {c}</FooterLink>
             ))}
-            <FooterLink href="/class/jee-neet">JEE / NEET</FooterLink>
+            <FooterLink href="/jee-neet">JEE / NEET</FooterLink>
+            <FooterLink href="/competitive">Competitive Exams</FooterLink>
           </div>
 
           {/* Subjects */}
@@ -57,13 +58,17 @@ export default function Footer() {
             <FooterLink href="/subject/physics">Physics</FooterLink>
             <FooterLink href="/subject/chemistry">Chemistry</FooterLink>
             <FooterLink href="/subject/biology">Biology</FooterLink>
-            <FooterLink href="/subject/commerce">Commerce</FooterLink>
+            <FooterLink href="/subject/accountancy">Accountancy</FooterLink>
+            <FooterLink href="/subject/economics">Economics</FooterLink>
           </div>
 
           {/* Platform */}
           <div>
             <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/40 mb-3">Platform</h4>
             <FooterLink href="/mock-test">Mock Tests</FooterLink>
+            <FooterLink href="/live">Live Classes</FooterLink>
+            <FooterLink href="/parent">Parent Portal</FooterLink>
+            <FooterLink href="/analytics">Analytics</FooterLink>
             <FooterLink href="/school/register">School System</FooterLink>
             <FooterLink href="/calculators">Calculators</FooterLink>
             <FooterLink href="/formulas">Formula Bank</FooterLink>
