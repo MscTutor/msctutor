@@ -16,6 +16,7 @@ const ROLE_CARDS = [
   { icon: '🏫', title: 'School',      desc: 'Manage classes, attendance, notices and academic workflows.',          href: '/school-dashboard' },
   { icon: '👨‍🏫', title: 'Teacher',     desc: 'Open teaching tools, live class flow and chapter support.',           href: '/teacher/dashboard' },
   { icon: '🏆', title: 'Competitive', desc: 'NTSE, Olympiads, JEE, NEET, UPSC, NDA — complete exam prep hub.',      href: '/competitive'      },
+  { icon: '📊', title: 'Analytics',   desc: 'Real-time performance charts, mastery map, badges, rank & quiz trends.', href: '/analytics'        },
 ]
 
 const QUICK_LINKS = [
@@ -24,8 +25,9 @@ const QUICK_LINKS = [
   { label: 'Formula Bank',      href: '/formulas'    },
   { label: 'Competitive Exams', href: '/competitive' },
   { label: 'Parent Portal',     href: '/parent'      },
-  { label: 'Live Classes',      href: '/live'        },
-  { label: 'AI Teacher',        href: '/ai-teacher'  },
+  { label: 'Live Classes',  href: '/live'       },
+  { label: 'Analytics',    href: '/analytics'  },
+  { label: 'AI Teacher',   href: '/ai-teacher' },
 ]
 
 export default function HomePage() {
