@@ -86,7 +86,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-[#f0f4ff] dark:bg-[#0a0f1e] text-[#0f1f3d] dark:text-[#e8eeff] min-h-screen">
         <LanguageProvider>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light" enableSystem={false}>
+          {/* ── SKIP-TO-MAIN-CONTENT (keyboard accessibility) ── */}
+          <a href="#main-content" className="sr-only focus:not-sr-only">
+            Skip to main content
+          </a>
+
           {/* ── STICKY HEADER STACK ── */}
           <div className="sticky top-0 z-50">
             <TopBar />
@@ -95,7 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
 
           {/* ── PAGE CONTENT ── */}
-          <main>{children}</main>
+          <main id="main-content">{children}</main>
 
           {/* ── FOOTER ── */}
           <Footer />

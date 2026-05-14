@@ -12,7 +12,7 @@ export default function Footer() {
             <div className="font-head font-bold text-[22px] mb-3">
               Msc<span className="text-amber-400">Tutor</span>.in
             </div>
-            <p className="text-[13px] text-white/60 leading-relaxed mb-4">
+            <p className="text-[13px] text-white/80 leading-relaxed mb-4">
               Free AI-powered education for Math, Science & Commerce students worldwide. NCERT + CBSE + State Board aligned.
             </p>
 
@@ -25,7 +25,7 @@ export default function Footer() {
 
             {/* Android App */}
             <div>
-              <p className="text-[11px] text-white/40 mb-2">Download App</p>
+              <p className="text-[11px] text-white/65 mb-2">Download App</p>
               <a
                 href={SITE.playStore}
                 target="_blank"
@@ -43,7 +43,7 @@ export default function Footer() {
 
           {/* Classes */}
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/40 mb-3">Classes</h4>
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/65 mb-3">Classes</h4>
             {['6','7','8','9','10','11','12'].map(c => (
               <FooterLink key={c} href={`/class/${c}`}>Class {c}</FooterLink>
             ))}
@@ -53,7 +53,7 @@ export default function Footer() {
 
           {/* Subjects */}
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/40 mb-3">Subjects</h4>
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/65 mb-3">Subjects</h4>
             <FooterLink href="/subject/mathematics">Mathematics</FooterLink>
             <FooterLink href="/subject/physics">Physics</FooterLink>
             <FooterLink href="/subject/chemistry">Chemistry</FooterLink>
@@ -64,7 +64,7 @@ export default function Footer() {
 
           {/* Platform */}
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/40 mb-3">Platform</h4>
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/65 mb-3">Platform</h4>
             <FooterLink href="/mock-test">Mock Tests</FooterLink>
             <FooterLink href="/live">Live Classes</FooterLink>
             <FooterLink href="/parent">Parent Portal</FooterLink>
@@ -78,7 +78,7 @@ export default function Footer() {
 
           {/* Legal — REQUIRED FOR ADSENSE */}
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/40 mb-3">Legal</h4>
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.8px] text-white/65 mb-3">Legal</h4>
             <FooterLink href="/privacy">Privacy Policy</FooterLink>
             <FooterLink href="/terms">Terms of Service</FooterLink>
             <FooterLink href="/dmca">DMCA Notice</FooterLink>
@@ -90,12 +90,12 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="pt-5 border-t border-white/10 flex flex-wrap gap-2 justify-between items-center">
-          <p className="text-[12px] text-white/40">
+          <p className="text-[12px] text-white/65">
             © {new Date().getFullYear()} MscTutor.in — Free education for every student 🌍
           </p>
           <div className="flex gap-4">
             {[['Privacy','/privacy'],['Terms','/terms'],['DMCA','/dmca'],['Sitemap','/sitemap.xml']].map(([label, href]) => (
-              <Link key={href} href={href} className="text-[12px] text-white/50 hover:text-white transition">{label}</Link>
+              <Link key={href} href={href} className="text-[12px] text-white/75 hover:text-white transition">{label}</Link>
             ))}
           </div>
         </div>

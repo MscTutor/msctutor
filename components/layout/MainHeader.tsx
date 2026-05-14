@@ -33,6 +33,7 @@ export default function MainHeader() {
   const [listening, setListening] = useState(false)
   const [showSug,   setShowSug]   = useState(false)
   const [showNotif, setShowNotif] = useState(false)
+  const [mobileOpen,setMobileOpen]= useState(false)
   const [notifs,    setNotifs]    = useState(HEADER_NOTIFS)
   const recogRef = useRef<any>(null)
   const filtered   = SUGGESTIONS.filter(s => query && s.toLowerCase().includes(query.toLowerCase()))
@@ -77,18 +78,25 @@ export default function MainHeader() {
     const h = (e: MouseEvent) => {
       if (!(e.target as Element).closest('.srch-wrap'))  setShowSug(false)
       if (!(e.target as Element).closest('.notif-bell')) setShowNotif(false)
+      if (!(e.target as Element).closest('.mob-menu'))   setMobileOpen(false)
     }
     document.addEventListener('click', h)
     return () => document.removeEventListener('click', h)
   }, [])
+
+  // Close mobile menu on route change
+  useEffect(() => { setMobileOpen(false) }, [router])
 
   function markAllRead() {
     setNotifs(prev => prev.map(n => ({ ...n, unread: false })))
   }
 
   return (
-    <header style={{ background:'#fff', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', padding:'0 16px', height:58, gap:10, boxShadow:'0 2px 10px rgba(26,58,107,.07)', position:'sticky', top:0, zIndex:100 }}>
-      <style>{`@keyframes pulse-mic{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4)}70%{box-shadow:0 0 0 8px rgba(220,38,38,0)}}`}</style>
+    <header
+      className="glass"
+      style={{ display:'flex', alignItems:'center', padding:'0 16px', height:58, gap:10, boxShadow:'0 2px 10px rgba(26,58,107,.07)', position:'sticky', top:0, zIndex:100 }}
+    >
+      <style>{`@keyframes pulse-mic{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4)}70%{box-shadow:0 0 0 8px rgba(220,38,38,0)}} @media(prefers-reduced-motion:reduce){@keyframes pulse-mic{0%,100%{box-shadow:none}}}`}</style>
 
       {/* Logo */}
       <Link href="/" style={{ display:'flex', alignItems:'center', gap:6, textDecoration:'none', flexShrink:0 }}>
@@ -100,15 +108,20 @@ export default function MainHeader() {
       {/* Search */}
       <form onSubmit={handleSearch} className="srch-wrap" style={{ flex:1, maxWidth:480, margin:'0 auto', position:'relative' }}>
         <div style={{ display:'flex', alignItems:'center', border:'2px solid #e5e7eb', borderRadius:11, background:'#f8faff', height:38 }}>
-          <span style={{ paddingLeft:10, color:'#9ca3af', fontSize:15 }}>🔍</span>
+          <span aria-hidden="true" style={{ paddingLeft:10, color:'#6b7280', fontSize:15 }}>🔍</span>
           <input value={query} onChange={e=>{setQuery(e.target.value);setShowSug(true)}} onFocus={()=>setShowSug(true)}
             placeholder={listening?'🎤 Listening...':'Search questions, chapters...'}
             style={{ flex:1, border:'none', background:'transparent', padding:'0 8px', fontSize:13, outline:'none', color:'#111', fontFamily:'inherit' }} />
-          <button type="button" onClick={listening?()=>{recogRef.current?.stop()}:startVoice}
+          <button type="button"
+            aria-label={listening ? 'Stop voice search' : 'Start voice search'}
+            aria-pressed={listening}
+            onClick={listening?()=>{recogRef.current?.stop()}:startVoice}
             style={{ width:34, height:34, borderRadius:7, border:'none', background:listening?'#dc2626':'#e8eef8', color:listening?'#fff':'#1a3a6b', cursor:'pointer', fontSize:15, margin:'0 3px', display:'flex', alignItems:'center', justifyContent:'center', animation:listening?'pulse-mic 1s infinite':'none' }}>
-            🎤
+            <span aria-hidden="true">🎤</span>
           </button>
-          <button type="submit" style={{ width:34, height:34, borderRadius:'0 9px 9px 0', border:'none', background:'#1a3a6b', color:'#fff', cursor:'pointer', fontSize:13, display:'flex', alignItems:'center', justifyContent:'center' }}>→</button>
+          <button type="submit" aria-label="Search" style={{ width:34, height:34, borderRadius:'0 9px 9px 0', border:'none', background:'#1a3a6b', color:'#fff', cursor:'pointer', fontSize:13, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <span aria-hidden="true">→</span>
+          </button>
         </div>
 
         {/* Suggestions */}
@@ -128,12 +141,12 @@ export default function MainHeader() {
         )}
       </form>
 
-      {/* Right buttons */}
-      <div style={{ display:'flex', alignItems:'center', gap:6, flexShrink:0 }}>
+      {/* Right buttons — hidden below md, replaced with hamburger */}
+      <div className="hidden md:flex" style={{ alignItems:'center', gap:6, flexShrink:0 }}>
         {/* AI Teacher button */}
         <Link href="/ai-teacher"
           style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', background:'linear-gradient(135deg,#0a5e3f,#064e34)', color:'#fff', borderRadius:10, textDecoration:'none', fontWeight:700, fontSize:12, whiteSpace:'nowrap' }}>
-          👩‍🏫 AI Teacher
+          <span aria-hidden="true">👩‍🏫</span> AI Teacher
         </Link>
 
         {/* Language Switcher */}
@@ -142,35 +155,44 @@ export default function MainHeader() {
         {/* Notification Bell */}
         <div className="notif-bell" style={{ position:'relative' }}>
           <button onClick={() => setShowNotif(v => !v)}
+            aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : 'Notifications'}
+            aria-expanded={showNotif}
             style={{ position:'relative', width:36, height:36, borderRadius:9, border:'1.5px solid #e5e7eb', background:'#f8faff', color:'#1a3a6b', cursor:'pointer', fontSize:17, display:'flex', alignItems:'center', justifyContent:'center', transition:'background .15s' }}>
-            🔔
+            <span aria-hidden="true">🔔</span>
             {unreadCount > 0 && (
-              <span style={{ position:'absolute', top:-5, right:-5, background:'#ef4444', color:'#fff', borderRadius:'50%', width:17, height:17, fontSize:9, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid #fff', lineHeight:1 }}>
+              <span aria-hidden="true" style={{ position:'absolute', top:-5, right:-5, background:'#ef4444', color:'#fff', borderRadius:'50%', width:17, height:17, fontSize:9, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid #fff', lineHeight:1 }}>
                 {unreadCount}
               </span>
             )}
           </button>
 
           {showNotif && (
-            <div style={{ position:'absolute', top:'calc(100% + 8px)', right:0, width:310, background:'#fff', borderRadius:14, boxShadow:'0 12px 40px rgba(0,0,0,.15)', border:'1px solid #e5e7eb', zIndex:300, overflow:'hidden' }}>
+            <div role="region" aria-label="Notifications" style={{ position:'absolute', top:'calc(100% + 8px)', right:0, width:'min(310px, calc(100vw - 24px))', maxWidth:'calc(100vw - 24px)', background:'#fff', borderRadius:14, boxShadow:'0 12px 40px rgba(0,0,0,.15)', border:'1px solid #e5e7eb', zIndex:300, overflow:'hidden' }}>
               <div style={{ padding:'11px 14px', borderBottom:'1px solid #f3f4f6', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <span style={{ fontWeight:800, color:'#1a3a6b', fontSize:13 }}>🔔 Notifications</span>
                 {unreadCount > 0 && (
                   <button onClick={markAllRead} style={{ fontSize:10, color:'#3b82f6', fontWeight:700, background:'none', border:'none', cursor:'pointer' }}>Mark all read</button>
                 )}
               </div>
-              {notifs.map(n => (
-                <div key={n.id}
-                  style={{ padding:'10px 14px', borderBottom:'1px solid #f9fafb', background: n.unread ? '#eff6ff' : '#fff', display:'flex', gap:9, alignItems:'flex-start', cursor:'pointer' }}
-                  onClick={() => setNotifs(prev => prev.map(x => x.id === n.id ? {...x, unread:false} : x))}>
-                  <span style={{ fontSize:16, flexShrink:0, marginTop:1 }}>{n.icon}</span>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontSize:11, color:'#374151', lineHeight:1.4, fontWeight: n.unread ? 700 : 400 }}>{n.text}</div>
-                    <div style={{ fontSize:10, color:'#9ca3af', marginTop:2 }}>{n.time}</div>
+              {notifs.map(n => {
+                const markRead = () => setNotifs(prev => prev.map(x => x.id === n.id ? {...x, unread:false} : x))
+                return (
+                  <div key={n.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${n.unread ? 'Unread: ' : ''}${n.text}, ${n.time}`}
+                    onClick={markRead}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); markRead() } }}
+                    style={{ padding:'10px 14px', borderBottom:'1px solid #f9fafb', background: n.unread ? '#eff6ff' : '#fff', display:'flex', gap:9, alignItems:'flex-start', cursor:'pointer' }}>
+                    <span aria-hidden="true" style={{ fontSize:16, flexShrink:0, marginTop:1 }}>{n.icon}</span>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:11, color:'#374151', lineHeight:1.4, fontWeight: n.unread ? 700 : 400 }}>{n.text}</div>
+                      <div style={{ fontSize:10, color:'#6b7280', marginTop:2 }}>{n.time}</div>
+                    </div>
+                    {n.unread && <div aria-hidden="true" style={{ width:7, height:7, borderRadius:'50%', background:'#3b82f6', flexShrink:0, marginTop:5 }} />}
                   </div>
-                  {n.unread && <div style={{ width:7, height:7, borderRadius:'50%', background:'#3b82f6', flexShrink:0, marginTop:5 }} />}
-                </div>
-              ))}
+                )
+              })}
               <div style={{ padding:'9px 14px', borderTop:'1px solid #f3f4f6', display:'flex', gap:10 }}>
                 <Link href="/parent" onClick={() => setShowNotif(false)}
                   style={{ fontSize:11, color:'#1a3a6b', fontWeight:700, textDecoration:'none' }}>Parent Portal →</Link>
@@ -184,8 +206,55 @@ export default function MainHeader() {
         {/* Ask AI */}
         <Link href="/ask"
           style={{ display:'flex', alignItems:'center', gap:5, background:'linear-gradient(135deg,#1a3a6b,#0e2347)', color:'#fff', borderRadius:10, padding:'7px 14px', textDecoration:'none', fontWeight:700, fontSize:13, whiteSpace:'nowrap', boxShadow:'0 2px 8px rgba(26,58,107,.25)' }}>
-          📝 Ask AI
+          <span aria-hidden="true">📝</span> Ask AI
         </Link>
+      </div>
+
+      {/* ── Mobile menu (visible only below md) ── */}
+      <div className="md:hidden mob-menu" style={{ position:'relative', flexShrink:0 }}>
+        <button
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileOpen}
+          onClick={() => setMobileOpen(o => !o)}
+          style={{ width:36, height:36, borderRadius:9, border:'1.5px solid #e5e7eb', background:'#f8faff', color:'#1a3a6b', cursor:'pointer', fontSize:18, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <span aria-hidden="true">{mobileOpen ? '✕' : '☰'}</span>
+        </button>
+
+        {mobileOpen && (
+          <div role="menu" aria-label="Main menu"
+            style={{ position:'absolute', top:'calc(100% + 8px)', right:0, width:'min(260px, calc(100vw - 24px))', background:'#fff', borderRadius:14, boxShadow:'0 12px 40px rgba(0,0,0,.18)', border:'1px solid #e5e7eb', zIndex:300, overflow:'hidden', padding:'8px' }}>
+
+            <Link href="/ask" onClick={() => setMobileOpen(false)} role="menuitem"
+              style={{ display:'flex', alignItems:'center', gap:8, padding:'10px 12px', background:'linear-gradient(135deg,#1a3a6b,#0e2347)', color:'#fff', borderRadius:10, textDecoration:'none', fontWeight:700, fontSize:13, marginBottom:6 }}>
+              <span aria-hidden="true">📝</span> Ask AI
+            </Link>
+
+            <Link href="/ai-teacher" onClick={() => setMobileOpen(false)} role="menuitem"
+              style={{ display:'flex', alignItems:'center', gap:8, padding:'10px 12px', background:'linear-gradient(135deg,#0a5e3f,#064e34)', color:'#fff', borderRadius:10, textDecoration:'none', fontWeight:700, fontSize:13, marginBottom:6 }}>
+              <span aria-hidden="true">👩‍🏫</span> AI Teacher
+            </Link>
+
+            <Link href="/dashboard" onClick={() => setMobileOpen(false)} role="menuitem"
+              style={{ display:'flex', alignItems:'center', gap:8, padding:'10px 12px', color:'#1a3a6b', borderRadius:10, textDecoration:'none', fontWeight:600, fontSize:13 }}>
+              <span aria-hidden="true">🎯</span> My Dashboard
+            </Link>
+
+            <button onClick={() => { setShowNotif(true); setMobileOpen(false) }} role="menuitem"
+              style={{ width:'100%', display:'flex', alignItems:'center', gap:8, padding:'10px 12px', color:'#1a3a6b', borderRadius:10, fontWeight:600, fontSize:13, background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit', textAlign:'left' }}>
+              <span aria-hidden="true">🔔</span> Notifications
+              {unreadCount > 0 && (
+                <span aria-hidden="true" style={{ marginLeft:'auto', background:'#ef4444', color:'#fff', borderRadius:10, padding:'1px 7px', fontSize:10, fontWeight:800 }}>{unreadCount}</span>
+              )}
+            </button>
+
+            <div style={{ borderTop:'1px solid #f3f4f6', marginTop:6, paddingTop:6 }}>
+              <div style={{ fontSize:10, color:'#9ca3af', fontWeight:700, padding:'4px 12px', textTransform:'uppercase', letterSpacing:.6 }}>Language</div>
+              <div style={{ padding:'0 8px' }}>
+                <LanguageSwitcher variant="compact" />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   )
