@@ -137,7 +137,7 @@ export default function SubjectNav() {
             ))}
           </div>
           <div className="mt-2 pt-2 border-t border-[#dde5f5]">
-            <DropLink href="/class/jee-neet" title="🏆 JEE / NEET" />
+            <DropLink href="/jee-neet" title="🏆 JEE / NEET" isNew={true} />
             <DropLink href="/class/competitive" title="🎯 Competitive Exams" />
           </div>
         </div>

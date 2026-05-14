@@ -1,4 +1,5 @@
 import { ALL_CLASS_DATA } from '@/lib/ncert-master'
+import { ALL_CLASS_DATA_1_5 } from '@/lib/ncert-master-1-5'
 import { ALL_CLASSES } from '@/lib/ncert-syllabus'
 import { CLASS_11_COMMERCE, CLASS_12_COMMERCE, CLASS_11_HUMANITIES, CLASS_12_HUMANITIES } from '@/lib/ncert-syllabus-commerce'
 import { CLASS10_MATHEMATICS_TEXTBOOK } from '@/lib/class10-maths-textbook'
@@ -248,6 +249,18 @@ function buildRichMap() {
       `10:mathematics:${chapter.id}`,
       normalizeRichChapter('10', 'mathematics', 'Mathematics', chapter),
     )
+  }
+
+  // Class 1-5 rich content
+  for (const classData of ALL_CLASS_DATA_1_5) {
+    for (const subject of classData.subjects) {
+      for (const chapter of subject.chapters) {
+        map.set(
+          `${classData.classLevel}:${subject.slug}:${chapter.id}`,
+          normalizeRichChapter(classData.classLevel, subject.slug, subject.name, chapter),
+        )
+      }
+    }
   }
 
   return map

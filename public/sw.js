@@ -15,7 +15,7 @@ const STATIC_ASSETS = [
 
 const CACHE_FIRST = ['/icons/', '/og/', '/_next/static/', '/_next/image']
 const NETWORK_FIRST = ['/api/ask', '/api/learning', '/api/auth']
-const STALE_WHILE_REVALIDATE = ['/api/search', '/api/knowledge-graph', '/formulas', '/class']
+const STALE_WHILE_REVALIDATE = ['/api/search', '/api/knowledge-graph', '/formulas', '/class', '/learn', '/jee-neet']
 
 // ── INSTALL ────────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {

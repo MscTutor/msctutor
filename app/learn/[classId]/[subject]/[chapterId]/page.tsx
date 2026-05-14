@@ -19,6 +19,8 @@ import {
   updateChapterProgress, updateTopicMastery,
 } from '@/lib/adaptive/learner-profile'
 import { DynamicKatex } from '@/components/LazyComponents'
+import dynamic from 'next/dynamic'
+const GraphCalcWidget = dynamic(() => import('@/components/calculators/GraphCalc'), { ssr: false, loading: () => <div style={{height:280,background:'#f3f4f6',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',color:'#9ca3af'}}>Loading Graph...</div> })
 
 // ─── FORMULA DISPLAY ─────────────────────────────────────────────
 type KatexProps = { math: string }
@@ -384,7 +386,7 @@ export default function ChapterPage() {
 </div>
 
 {/* ═══ TABS ══════════════════════════════════════════════════════ */}
-<div style={{background:'#fff',borderBottom:'1.5px solid #e5e7eb',overflowX:'auto',position:'sticky',top:0,zIndex:50,boxShadow:'0 2px 8px rgba(0,0,0,.06)'}}>
+<div style={{background:'#fff',borderBottom:'1.5px solid #e5e7eb',overflowX:'auto',WebkitOverflowScrolling:'touch' as any,scrollBehavior:'smooth',position:'sticky',top:0,zIndex:50,boxShadow:'0 2px 8px rgba(0,0,0,.06)'}}>
   <div style={{display:'flex',padding:'0 0.5rem',minWidth:'max-content'}}>
     {([
       {id:'overview',   label:'🗺 Overview'},
@@ -742,6 +744,17 @@ export default function ChapterPage() {
           🤖 Generate Formula Sheet
         </button>
       </div>
+
+      {/* interactive graph plotter for math/physics/chemistry */}
+      {['mathematics','physics','chemistry','science'].includes(subSlug) && (
+        <div style={{...S.card,marginTop:'0.875rem'}}>
+          <div style={{fontWeight:800,fontSize:15,marginBottom:'0.875rem',display:'flex',alignItems:'center',gap:8}}>
+            <span style={{fontSize:20}}>📈</span> Interactive Graph Plotter
+            <span style={{fontSize:12,fontWeight:400,color:'#9ca3af'}}>Plot any function to visualise it</span>
+          </div>
+          <GraphCalcWidget />
+        </div>
+      )}
     </div>
   )}
 </div>
