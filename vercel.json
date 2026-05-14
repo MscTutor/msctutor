@@ -1,6 +1,40 @@
 {
+  "version": 2,
   "framework": "nextjs",
   "buildCommand": "npx prisma generate && next build",
+  "outputDirectory": ".next",
   "installCommand": "npm install",
-  "regions": ["bom1"]
+  "devCommand": "npm run dev",
+  "regions": ["bom1"],
+  "functions": {
+    "app/api/**/*.ts": { "maxDuration": 60 },
+    "app/api/ask/route.ts": { "maxDuration": 60, "memory": 512 },
+    "app/api/ask-image/route.ts": { "maxDuration": 60, "memory": 1024 },
+    "app/api/ask-pdf/route.ts": { "maxDuration": 60, "memory": 1024 },
+    "app/api/exam/generate/route.ts": { "maxDuration": 60, "memory": 512 }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/sitemap" },
+    { "source": "/robots.txt", "destination": "/robots" }
+  ]
 }

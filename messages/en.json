@@ -1,47 +1,149 @@
 {
+  "common": {
+    "loading": "Loading...", "error": "Something went wrong",
+    "back": "Go Back", "submit": "Submit", "cancel": "Cancel",
+    "save": "Save", "delete": "Delete", "edit": "Edit",
+    "search": "Search", "close": "Close", "open": "Open",
+    "yes": "Yes", "no": "No", "ok": "OK", "next": "Next",
+    "prev": "Previous", "home": "Home", "subject": "Subject",
+    "class": "Class", "chapter": "Chapter", "topic": "Topic",
+    "showMore": "Show More", "showLess": "Show Less", "viewAll": "View All",
+    "tryAgain": "Try Again", "goHome": "Go to Home", "share": "Share",
+    "copy": "Copy", "copied": "Copied!", "download": "Download",
+    "upload": "Upload", "send": "Send", "refresh": "Refresh"
+  },
   "nav": {
-    "askAI": "Ask AI",
-    "aiTeacher": "AI Teacher",
-    "mockTest": "Mock Test",
-    "formulas": "Formulas",
-    "experiments": "Experiments",
-    "search": "Search",
-    "login": "Sign In",
-    "dashboard": "Dashboard",
-    "home": "Home",
-    "mathematics": "Mathematics",
-    "science": "Science",
-    "commerce": "Commerce",
-    "classes": "Classes",
-    "pricing": "Pricing",
-    "community": "Community",
-    "schools": "Schools"
+    "home": "Home", "askAI": "Ask AI", "aiTeacher": "AI Teacher",
+    "mockTest": "Mock Test", "formulas": "Formulas",
+    "experiments": "Experiments", "search": "Search",
+    "login": "Sign In", "register": "Sign Up", "logout": "Sign Out",
+    "dashboard": "Dashboard", "profile": "Profile", "settings": "Settings",
+    "admin": "Admin", "teacher": "Teacher", "school": "School"
+  },
+  "topbar": {
+    "free": "Free", "freeBadge": "100% Free",
+    "boards": "CBSE • ICSE • State Board",
+    "tagline": "Free AI education for every student — MscTutor.in",
+    "install": "Install App"
   },
   "home": {
-    "hero_title": "Har Sawaal Ka Jawab",
-    "hero_subtitle": "Free AI education for every student",
-    "ask_placeholder": "Apna sawaal likhiye...",
-    "free_badge": "Free"
+    "heroTitle": "Har Sawaal Ka Jawab",
+    "heroSubtitle": "Free AI education for Class 1-12 students",
+    "heroDesc": "Ask in Hindi, English, or any Indian language. Get step-by-step solutions instantly.",
+    "askPlaceholder": "Type your question here...",
+    "freeBadge": "Free",
+    "startLearning": "Start Learning Free",
+    "watchDemo": "Watch Demo",
+    "stats_questions": "Questions Solved",
+    "stats_students": "Students",
+    "stats_languages": "Indian Languages",
+    "stats_free": "Always Free"
   },
   "ask": {
     "title": "Har Sawaal Ka Jawab",
-    "subtitle": "Text • Image • Voice • PDF - Kisi bhi tarike se poochho",
-    "type_tab": "Type",
-    "image_tab": "Image",
-    "voice_tab": "Voice",
-    "pdf_tab": "PDF",
-    "solve_btn": "Solve",
-    "sample_title": "Sample Questions - Try karo:"
+    "subtitle": "Text • Image • Voice • PDF — Any way you want",
+    "typeTab": "Type", "imageTab": "Image",
+    "voiceTab": "Voice", "pdfTab": "PDF",
+    "placeholder": "Type your question here...",
+    "solveBtn": "Solve", "clearBtn": "Clear",
+    "sampleTitle": "Sample Questions — Try these:",
+    "uploadImage": "Upload Image",
+    "startVoice": "Start Speaking",
+    "stopVoice": "Stop",
+    "uploadPdf": "Upload PDF",
+    "answerTitle": "AI Solution",
+    "copied": "Copied!",
+    "copyAnswer": "Copy Answer",
+    "relatedTopics": "Related Topics",
+    "tryAnother": "Try Another Question",
+    "deeperExplain": "Explain Deeper",
+    "practiceQ": "Practice Questions"
   },
-  "common": {
-    "loading": "Loading...",
-    "error": "Kuch galat ho gaya",
-    "back": "Wapas jaao",
-    "submit": "Submit"
+  "aiTeacher": {
+    "title": "AI Teacher",
+    "subtitle": "Your personal adaptive tutor",
+    "chatPlaceholder": "Ask your teacher anything...",
+    "send": "Send",
+    "modes": {
+      "explain": "Explain", "quiz": "Quiz Mode",
+      "revision": "Revision", "practice": "Practice",
+      "studyPlan": "Study Plan"
+    },
+    "weakTopics": "Weak Topics",
+    "revision": {
+      "dueNow": "Due for Revision",
+      "allCaughtUp": "All caught up! No revision due.",
+      "revise": "Revise"
+    },
+    "emotional": {
+      "frustrated": "I understand this feels hard. Let's try a different approach.",
+      "confused": "No worries! Confusion is part of learning. Let me break it down.",
+      "bored": "Since you have the basics, let's try something more challenging!",
+      "confident": "You are doing great! Let's level up.",
+      "anxious": "Exam pressure is real, but you are more prepared than you think."
+    }
   },
-  "topbar": {
-    "free_badge": "Free",
-    "boards": "CBSE • ICSE • State Board",
-    "tagline": "Free AI education for every student — MscTutor.in"
+  "dashboard": {
+    "welcome": "Welcome back",
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "totalQuestions": "Questions Asked",
+    "accuracy": "Accuracy",
+    "streak": "Day Streak",
+    "history": "Question History",
+    "noHistory": "No questions yet. Ask your first question!",
+    "continueLearn": "Continue Learning",
+    "freeCredits": "Free Credits Left",
+    "premiumRequired": "Upgrade for unlimited access",
+    "upgrade": "Upgrade"
+  },
+  "gamification": {
+    "xp": "XP", "level": "Level", "streak": "Day Streak",
+    "badges": "Badges", "levelUp": "Level Up!",
+    "badgeEarned": "Badge Earned!", "nextLevel": "to next level",
+    "totalXP": "Total XP"
+  },
+  "formulas": {
+    "title": "Formula Bank",
+    "subtitle": "1000+ NCERT Formulas",
+    "searchPlaceholder": "Search formulas...",
+    "variables": "Variables", "example": "Example",
+    "derivation": "Derivation", "note": "Note",
+    "practiceBtn": "Practice", "copyBtn": "Copy",
+    "allSubjects": "All Subjects"
+  },
+  "mockTest": {
+    "title": "Mock Test", "generate": "Generate Test",
+    "selectClass": "Select Class", "selectSubject": "Select Subject",
+    "selectQuestions": "Number of Questions",
+    "startTest": "Start Test", "submitTest": "Submit Test",
+    "score": "Score", "correct": "Correct", "incorrect": "Incorrect",
+    "timeLeft": "Time Left", "review": "Review Answers"
+  },
+  "auth": {
+    "login": "Sign In", "register": "Create Account",
+    "email": "Email", "password": "Password",
+    "name": "Full Name", "forgotPassword": "Forgot Password?",
+    "loginBtn": "Sign In", "registerBtn": "Create Account",
+    "orGoogle": "Or continue with Google",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "signInLink": "Sign In", "signUpLink": "Sign Up"
+  },
+  "errors": {
+    "networkError": "Network error. Please check your connection.",
+    "serverError": "Server error. Please try again.",
+    "notFound": "Page not found.",
+    "unauthorized": "Please sign in to continue.",
+    "forbidden": "You don't have permission to access this.",
+    "rateLimit": "Too many requests. Please wait a moment.",
+    "aiError": "AI service temporarily unavailable. Please try again."
+  },
+  "notifications": {
+    "newBadge": "New Badge Earned!",
+    "streakContinued": "Streak continued!",
+    "levelUp": "You leveled up!",
+    "revisionDue": "Revision due for some topics"
   }
 }

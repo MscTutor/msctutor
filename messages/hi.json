@@ -1,47 +1,141 @@
 {
+  "common": {
+    "loading": "लोड हो रहा है...", "error": "कुछ गलत हो गया",
+    "back": "वापस जाएं", "submit": "Submit करें", "cancel": "रद्द करें",
+    "save": "सेव करें", "delete": "हटाएं", "edit": "बदलें",
+    "search": "खोजें", "close": "बंद करें", "open": "खोलें",
+    "yes": "हाँ", "no": "नहीं", "ok": "ठीक है", "next": "अगला",
+    "prev": "पिछला", "home": "होम", "subject": "विषय",
+    "class": "कक्षा", "chapter": "अध्याय", "topic": "टॉपिक",
+    "showMore": "और दिखाएं", "showLess": "कम दिखाएं", "viewAll": "सब देखें",
+    "tryAgain": "फिर कोशिश करें", "goHome": "होम पर जाएं",
+    "copy": "कॉपी करें", "copied": "कॉपी हो गया!", "download": "डाउनलोड",
+    "upload": "अपलोड", "send": "भेजें", "refresh": "रिफ्रेश करें"
+  },
   "nav": {
-    "askAI": "AI se Poocho",
-    "aiTeacher": "AI Teacher",
-    "mockTest": "Mock Test",
-    "formulas": "Formulas",
-    "experiments": "Experiments",
-    "search": "Khojo",
-    "login": "Login",
-    "dashboard": "Dashboard",
-    "home": "Home",
-    "mathematics": "गणित",
-    "science": "विज्ञान",
-    "commerce": "कॉमर्स",
-    "classes": "कक्षाएं",
-    "pricing": "Pricing",
-    "community": "Community",
-    "schools": "Schools"
+    "home": "होम", "askAI": "AI से पूछो", "aiTeacher": "AI Teacher",
+    "mockTest": "Mock Test", "formulas": "Formulas",
+    "experiments": "Experiments", "search": "खोजें",
+    "login": "लॉगिन", "register": "रजिस्टर", "logout": "लॉगआउट",
+    "dashboard": "Dashboard", "profile": "प्रोफाइल", "settings": "सेटिंग्स",
+    "admin": "Admin", "teacher": "Teacher", "school": "School"
+  },
+  "topbar": {
+    "free": "मुफ्त", "freeBadge": "100% मुफ्त",
+    "boards": "CBSE • ICSE • State Board",
+    "tagline": "हर छात्र के लिए मुफ्त AI शिक्षा — MscTutor.in",
+    "install": "App इनस्टॉल करें"
   },
   "home": {
-    "hero_title": "हर सवाल का जवाब",
-    "hero_subtitle": "हर छात्र के लिए मुफ्त AI शिक्षा",
-    "ask_placeholder": "अपना सवाल लिखिए...",
-    "free_badge": "मुफ्त"
+    "heroTitle": "हर सवाल का जवाब",
+    "heroSubtitle": "कक्षा 1-12 के छात्रों के लिए मुफ्त AI शिक्षा",
+    "heroDesc": "हिंदी, English, या किसी भी भारतीय भाषा में पूछो। तुरंत step-by-step हल पाओ।",
+    "askPlaceholder": "अपना सवाल यहाँ लिखिए...",
+    "freeBadge": "मुफ्त",
+    "startLearning": "मुफ्त में शुरू करें",
+    "watchDemo": "Demo देखें",
+    "stats_questions": "सवाल हल किए",
+    "stats_students": "छात्र",
+    "stats_languages": "भारतीय भाषाएं",
+    "stats_free": "हमेशा मुफ्त"
   },
   "ask": {
     "title": "हर सवाल का जवाब",
     "subtitle": "Text • Image • Voice • PDF — किसी भी तरीके से पूछो",
-    "type_tab": "टाइप करें",
-    "image_tab": "इमेज",
-    "voice_tab": "आवाज़",
-    "pdf_tab": "PDF",
-    "solve_btn": "हल करो",
-    "sample_title": "Sample सवाल — Try करो:"
+    "typeTab": "टाइप करें", "imageTab": "इमेज",
+    "voiceTab": "आवाज़", "pdfTab": "PDF",
+    "placeholder": "अपना सवाल यहाँ लिखिए...",
+    "solveBtn": "हल करो", "clearBtn": "साफ करें",
+    "sampleTitle": "Sample सवाल — Try करो:",
+    "uploadImage": "इमेज अपलोड करें",
+    "startVoice": "बोलना शुरू करें",
+    "stopVoice": "रुकें",
+    "uploadPdf": "PDF अपलोड करें",
+    "answerTitle": "AI का जवाब",
+    "copied": "कॉपी हो गया!",
+    "copyAnswer": "जवाब कॉपी करें",
+    "relatedTopics": "संबंधित Topics",
+    "tryAnother": "दूसरा सवाल पूछें",
+    "deeperExplain": "और विस्तार से समझाओ",
+    "practiceQ": "Practice सवाल"
   },
-  "common": {
-    "loading": "लोड हो रहा है...",
-    "error": "कुछ गलत हो गया",
-    "back": "वापस जाओ",
-    "submit": "Submit करें"
+  "aiTeacher": {
+    "title": "AI Teacher",
+    "subtitle": "आपका personal adaptive tutor",
+    "chatPlaceholder": "अपने teacher से कुछ भी पूछो...",
+    "send": "भेजें",
+    "modes": {
+      "explain": "समझाओ", "quiz": "Quiz Mode",
+      "revision": "Revision", "practice": "Practice",
+      "studyPlan": "Study Plan"
+    },
+    "weakTopics": "कमज़ोर Topics",
+    "revision": {
+      "dueNow": "आज Revision बाकी है",
+      "allCaughtUp": "बढ़िया! आज कोई revision नहीं है।",
+      "revise": "Revise करें"
+    },
+    "emotional": {
+      "frustrated": "मैं समझता हूं यह कठिन लग रहा है। एक अलग तरीका try करते हैं।",
+      "confused": "कोई बात नहीं! Confusion learning का हिस्सा है। Step-by-step समझते हैं।",
+      "bored": "Basics आ गए! कुछ challenging try करते हैं।",
+      "confident": "बहुत बढ़िया! अब थोड़ा advanced देखते हैं।",
+      "anxious": "Exam pressure समझ में आता है। तुम सोचते हो से ज़्यादा ready हो।"
+    }
   },
-  "topbar": {
-    "free_badge": "मुफ्त",
-    "boards": "CBSE • ICSE • State Board",
-    "tagline": "हर छात्र के लिए मुफ्त AI शिक्षा — MscTutor.in"
+  "dashboard": {
+    "welcome": "वापस आए",
+    "goodMorning": "सुप्रभात", "goodAfternoon": "नमस्ते", "goodEvening": "शुभ संध्या",
+    "totalQuestions": "पूछे गए सवाल", "accuracy": "सटीकता", "streak": "दिन की Streak",
+    "history": "सवालों का इतिहास", "noHistory": "अभी तक कोई सवाल नहीं। पहला सवाल पूछो!",
+    "continueLearn": "पढ़ाई जारी रखो",
+    "freeCredits": "Free Credits बचे हैं", "premiumRequired": "Unlimited access के लिए upgrade करें",
+    "upgrade": "Upgrade करें"
+  },
+  "gamification": {
+    "xp": "XP", "level": "Level", "streak": "दिन की Streak",
+    "badges": "Badges", "levelUp": "Level Up!", "badgeEarned": "Badge मिला!",
+    "nextLevel": "अगले level के लिए", "totalXP": "कुल XP"
+  },
+  "formulas": {
+    "title": "Formula Bank", "subtitle": "1000+ NCERT Formulas",
+    "searchPlaceholder": "Formula खोजें...",
+    "variables": "Variables", "example": "उदाहरण",
+    "derivation": "व्युत्पत्ति", "note": "नोट",
+    "practiceBtn": "Practice करो", "copyBtn": "कॉपी करें",
+    "allSubjects": "सभी विषय"
+  },
+  "mockTest": {
+    "title": "Mock Test", "generate": "Test बनाओ",
+    "selectClass": "कक्षा चुनें", "selectSubject": "विषय चुनें",
+    "selectQuestions": "सवालों की संख्या",
+    "startTest": "Test शुरू करो", "submitTest": "Test जमा करो",
+    "score": "Score", "correct": "सही", "incorrect": "गलत",
+    "timeLeft": "समय बचा", "review": "जवाब देखें"
+  },
+  "auth": {
+    "login": "लॉगिन", "register": "Account बनाएं",
+    "email": "Email", "password": "Password",
+    "name": "पूरा नाम", "forgotPassword": "Password भूल गए?",
+    "loginBtn": "लॉगिन करें", "registerBtn": "Account बनाएं",
+    "orGoogle": "या Google से जारी रखें",
+    "haveAccount": "पहले से account है?",
+    "noAccount": "Account नहीं है?",
+    "signInLink": "लॉगिन करें", "signUpLink": "रजिस्टर करें"
+  },
+  "errors": {
+    "networkError": "Network error। Connection check करें।",
+    "serverError": "Server error। फिर try करें।",
+    "notFound": "Page नहीं मिला।",
+    "unauthorized": "जारी रखने के लिए sign in करें।",
+    "forbidden": "आपको इस page की permission नहीं है।",
+    "rateLimit": "बहुत requests। थोड़ा इंतजार करें।",
+    "aiError": "AI service अभी unavailable है। फिर try करें।"
+  },
+  "notifications": {
+    "newBadge": "नया Badge मिला!",
+    "streakContinued": "Streak जारी है!",
+    "levelUp": "Level Up हो गए!",
+    "revisionDue": "कुछ topics का revision बाकी है"
   }
 }
