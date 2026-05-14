@@ -17,6 +17,16 @@ import {
   getOrCreateProfile, saveProfile,
   updateChapterProgress, updateTopicMastery,
 } from '@/lib/adaptive/learner-profile'
+import { DynamicKatex } from '@/components/LazyComponents'
+
+// ─── FORMULA DISPLAY ─────────────────────────────────────────────
+function FormulaDisplay({ formula }: { formula: string }) {
+  const isLatex = /[\\^_{}]|\\frac|\\sqrt|\\sum|\\int/.test(formula)
+  if (!isLatex) {
+    return <span style={{fontFamily:'monospace',fontSize:15,fontWeight:700,color:'#1e1b4b'}}>{formula}</span>
+  }
+  return <DynamicKatex math={formula} />
+}
 
 // ─── TYPES ───────────────────────────────────────────────────────
 type Tab = 'overview'|'learn'|'formulas'|'experiments'|'videos'|'revise'|'ask'
@@ -681,8 +691,8 @@ export default function ChapterPage() {
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontWeight:800,fontSize:15,color:'#111',marginBottom:4}}>{f.name}</div>
                 {/* formula display */}
-                <div style={{fontFamily:'monospace',fontSize:15,fontWeight:700,color:theme.primary,background:theme.light,display:'inline-block',padding:'3px 13px',borderRadius:8,border:`1px solid ${theme.border}`}}>
-                  {f.formula}
+                <div style={{overflowX:'auto',padding:'4px 0'}}>
+                  <FormulaDisplay formula={f.formula} />
                 </div>
               </div>
 
@@ -1049,6 +1059,28 @@ export default function ChapterPage() {
   )}
 </div>
 )}
+
+<div style={{textAlign:'center',marginTop:'1.5rem',marginBottom:'1rem'}}>
+  <button
+    onClick={() => window.print()}
+    style={{
+      padding:'9px 22px',
+      background:'#f0f4ff',
+      color:'#1a3a6b',
+      border:'1.5px solid #c7d2fe',
+      borderRadius:11,
+      fontWeight:700,
+      cursor:'pointer',
+      fontFamily:'inherit',
+      fontSize:13,
+      display:'inline-flex',
+      alignItems:'center',
+      gap:6,
+    }}
+  >
+    🖨️ Print / Save as PDF
+  </button>
+</div>
 
 {/* ── CHAPTER NAV ─────────────────────────────────────────────── */}
 <div style={{display:'flex',justifyContent:'space-between',gap:'0.75rem',marginTop:'2.5rem',paddingTop:'1.5rem',borderTop:'2px solid #e5e7eb'}}>
