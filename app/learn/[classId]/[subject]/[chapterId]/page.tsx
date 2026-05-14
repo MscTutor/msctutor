@@ -21,7 +21,8 @@ import {
 import { DynamicKatex } from '@/components/LazyComponents'
 
 // ─── FORMULA DISPLAY ─────────────────────────────────────────────
-const KatexMath = DynamicKatex as React.ComponentType<{math: string}>
+type KatexProps = { math: string }
+const KatexMath = DynamicKatex as React.ComponentType<KatexProps>
 function FormulaDisplay({ formula }: { formula: string }) {
   const isLatex = /[\\^_{}]|\\frac|\\sqrt|\\sum|\\int/.test(formula)
   if (!isLatex) {

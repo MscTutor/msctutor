@@ -1,8 +1,11 @@
 'use client'
+import React from 'react'
 import dynamic from 'next/dynamic'
 
-const InlineMath = dynamic(
-  () => import('react-katex').then(m => ({ default: m.InlineMath })),
+type KatexProps = { math: string }
+
+const InlineMath = dynamic<KatexProps>(
+  () => import('react-katex').then(m => ({ default: m.InlineMath as React.ComponentType<KatexProps> })),
   { ssr: false, loading: () => <span style={{fontFamily:'monospace',background:'#f0f4ff',padding:'2px 8px',borderRadius:4}}>{'{loading...}'}</span> }
 )
 

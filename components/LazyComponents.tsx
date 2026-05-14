@@ -2,6 +2,7 @@
 // components/LazyComponents.tsx — Dynamic imports for heavy components
 // Reduces initial JS bundle by 40-60%
 
+import React from 'react'
 import dynamic from 'next/dynamic'
 
 // ── LOADING SKELETONS ─────────────────────────────────────────────
@@ -31,14 +32,17 @@ export function FormulaRendererSkeleton() {
 }
 
 // ── DYNAMIC IMPORTS ────────────────────────────────────────────────
+type KatexInlineProps = { math: string }
+type KatexBlockProps  = { math: string }
+
 // KaTeX (math rendering) — 300KB, only load on formula pages
-export const DynamicKatex = dynamic(
-  () => import('react-katex').then(m => ({ default: m.InlineMath })),
+export const DynamicKatex = dynamic<KatexInlineProps>(
+  () => import('react-katex').then(m => ({ default: m.InlineMath as React.ComponentType<KatexInlineProps> })),
   { loading: FormulaRendererSkeleton, ssr: false }
 )
 
-export const DynamicBlockKatex = dynamic(
-  () => import('react-katex').then(m => ({ default: m.BlockMath })),
+export const DynamicBlockKatex = dynamic<KatexBlockProps>(
+  () => import('react-katex').then(m => ({ default: m.BlockMath as React.ComponentType<KatexBlockProps> })),
   { loading: FormulaRendererSkeleton, ssr: false }
 )
 
