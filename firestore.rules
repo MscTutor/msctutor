@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Users: only the owner can read/write their own doc ──
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ── Public content (chapters, formulas) — read-only ──
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ── Comments — anyone can read; only auth users can create ──
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.uid;
+    }
+
+    // ── Notifications — owner only ──
+    match /notifications/{userId}/{notifId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ── Quiz results — owner only ──
+    match /quizResults/{userId}/{resultId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ── Payments — server-side only (blocked from client) ──
+    match /payments/{docId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow write: if false;
+    }
+
+    // ── Default deny ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
