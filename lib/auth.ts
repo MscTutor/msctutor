@@ -16,10 +16,35 @@ export interface AuthUser {
 export async function verifyToken(token: string): Promise<AuthUser | null> {
   try {
     const decoded = await adminAuth.verifyIdToken(token)
-    const user = await prisma.user.findUnique({
+    const adminUid = process.env.ADMIN_FIREBASE_UID
+
+    let user = await prisma.user.findUnique({
       where: { firebaseUid: decoded.uid },
     })
-    if (!user) return null
+
+    // Auto-create user in DB if Firebase token valid but no DB record yet
+    if (!user) {
+      const isAdminUser = adminUid && decoded.uid === adminUid
+      user = await prisma.user.create({
+        data: {
+          firebaseUid: decoded.uid,
+          email:       decoded.email ?? null,
+          name:        decoded.name ?? decoded.email?.split('@')[0] ?? 'User',
+          role:        isAdminUser ? 'super_admin' : 'student',
+          plan:        'free',
+          credits:     5,
+        },
+      })
+    }
+
+    // Upgrade to super_admin if UID matches ADMIN_FIREBASE_UID
+    if (adminUid && decoded.uid === adminUid && user.role !== 'super_admin') {
+      user = await prisma.user.update({
+        where: { firebaseUid: decoded.uid },
+        data:  { role: 'super_admin' },
+      })
+    }
+
     return {
       uid:      user.firebaseUid,
       email:    user.email,
